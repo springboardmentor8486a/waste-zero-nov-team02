@@ -1,0 +1,29 @@
+input {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  display: block !important;
+  place-items: unset !important;
+}
+
+body {
+  display: block !important;
+}
+
+.main-wrapper {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+* {
+  box-sizing: border-box;
+}
