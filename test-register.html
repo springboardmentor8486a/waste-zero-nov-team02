@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Registration</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 500px; margin: 0 auto; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; }
+        button { background: #065f46; color: white; border: none; cursor: pointer; }
+        button:hover { background: #054d38; }
+        .result { margin-top: 20px; padding: 10px; border-radius: 5px; }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test User Registration</h1>
+    <p>Use this form to create a test user and see data in MongoDB Atlas</p>
+    
+    <form id="registerForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <select id="role" required>
+            <option value="">Select Role</option>
+            <option value="volunteer">Volunteer</option>
+            <option value="ngo">NGO</option>
+            <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Register Test User</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '⏳ Registering...';
+            
+            const data = {
+                email: document.getElementById('email').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                role: document.getElementById('role').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        ✅ <strong>Success!</strong><br>
+                        User registered: ${result.user.email}<br>
+                        Username: ${result.user.username}<br>
+                        Role: ${result.user.role}<br><br>
+                        <strong>Next Steps:</strong><br>
+                        1. Go to MongoDB Atlas<br>
+                        2. Click "Browse Collections"<br>
+                        3. Select "wastezero" database<br>
+                        4. Click "users" collection<br>
+                        5. Refresh to see the new user!
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Error: ${result.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Connection Error: ${error.message}<br>Make sure backend is running on port 5000`;
+            }
+        });
+    </script>
+</body>
+</html>
+
