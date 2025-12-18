@@ -31,17 +31,32 @@ export default function RegisterPage() {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: async (resp) => {
-              const tokenId = resp.credential;
-              try {
-                const res = await api.post('/auth/google', { tokenId });
-                if (res.data?.success) {
-                  localStorage.setItem('token', res.data.token);
-                  localStorage.setItem('name', res.data.user.fullName || res.data.user.username);
-                  localStorage.setItem('role', res.data.user.role);
-                  navigate('/dashboard');
+                try {
+                  console.debug('Google credential received (register)', resp);
+                  const tokenId = resp.credential;
+                  const res = await api.post('/auth/google', { tokenId });
+                  console.debug('Backend /auth/google response (register)', res?.data);
+
+                  if (res?.data?.success) {
+                    localStorage.setItem('token', res.data.token);
+                    localStorage.setItem('name', res.data.user.fullName || res.data.user.username);
+                    localStorage.setItem('role', res.data.user.role);
+                    navigate('/dashboard');
+                    return;
+                  }
+
+                  if (res?.data?.token) {
+                    console.warn('No success flag but token returned (register) — using fallback redirect');
+                    localStorage.setItem('token', res.data.token);
+                    localStorage.setItem('name', res.data.user?.fullName || res.data.user?.username || 'User');
+                    localStorage.setItem('role', res.data.user?.role || 'volunteer');
+                    navigate('/dashboard');
+                    return;
+                  }
+                } catch (err) {
+                  console.error('Google register failed', err);
                 }
-              } catch (err) { console.error('Google register failed', err); }
-            }
+              }
           });
 
           const el = document.getElementById('googleSignInRegister');

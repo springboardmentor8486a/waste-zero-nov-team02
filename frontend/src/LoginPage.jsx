@@ -34,11 +34,14 @@ export default function LoginPage() {
           client_id: clientId,
           callback: async (resp) => {
             try {
+              console.debug('Google credential received', resp);
               const res = await api.post("/auth/google", {
                 tokenId: resp.credential,
               });
+              console.debug('Backend /auth/google response', res?.data);
 
-              if (res.data.success) {
+              // Primary flow: respect explicit success flag
+              if (res?.data?.success) {
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem(
                   "name",
@@ -46,7 +49,25 @@ export default function LoginPage() {
                 );
                 localStorage.setItem("role", res.data.user.role);
                 navigate("/dashboard");
+                return;
               }
+
+              // Fallback: if backend returned a token even without `success`, still accept it
+              if (res?.data?.token) {
+                console.warn('No success flag but token returned — using fallback redirect');
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem(
+                  "name",
+                  res.data.user?.fullName || res.data.user?.username || 'User'
+                );
+                localStorage.setItem("role", res.data.user?.role || 'volunteer');
+                navigate("/dashboard");
+                return;
+              }
+
+              // If we reach here, show error for visibility
+              console.error('Google sign-in did not return token or success flag', res?.data);
+              setErrorMsg("Google sign-in failed");
             } catch (err) {
               console.error("Google sign-in failed", err);
               setErrorMsg("Google sign-in failed");

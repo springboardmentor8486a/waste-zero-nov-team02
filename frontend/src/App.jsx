@@ -1,3 +1,11 @@
+
+//import NgoDashboard from "./NgoDashboard";
+
+//function App() {
+ // return <NgoDashboard />;
+//}
+
+//export default App;
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import WelcomePage from "./WelcomePage";
