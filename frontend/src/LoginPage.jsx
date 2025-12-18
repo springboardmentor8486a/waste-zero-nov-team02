@@ -17,55 +17,57 @@ export default function LoginPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // Verify token is still valid
       api.get("/auth/me")
         .then(() => navigate("/dashboard"))
         .catch(() => localStorage.removeItem("token"));
     }
   }, [navigate]);
 
-  // Google Identity Services
+  // ✅ Google Identity Services
   useEffect(() => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     if (!clientId) return;
 
     const onLoad = () => {
-      if (window.google && window.google.accounts && window.google.accounts.id) {
-        try {
-          window.google.accounts.id.initialize({
-            client_id: clientId,
-            callback: async (resp) => {
-              // resp.credential contains the ID token
-              const tokenId = resp.credential;
-              try {
-                const res = await api.post('/auth/google', { tokenId });
-                if (res.data?.success) {
-                  localStorage.setItem('token', res.data.token);
-                  localStorage.setItem('name', res.data.user.fullName || res.data.user.username);
-                  localStorage.setItem('role', res.data.user.role);
-                  navigate('/dashboard');
-                }
-              } catch (err) {
-                console.error('Google sign-in failed', err);
-              }
-            }
-          });
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: async (resp) => {
+            try {
+              const res = await api.post("/auth/google", {
+                tokenId: resp.credential,
+              });
 
-          // render button into placeholder
-          const el = document.getElementById('googleSignIn');
-          if (el) window.google.accounts.id.renderButton(el, { theme: 'outline', size: 'large' });
-        } catch (e) {
-          console.error('Google ID init error', e);
+              if (res.data.success) {
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem(
+                  "name",
+                  res.data.user.fullName || res.data.user.username
+                );
+                localStorage.setItem("role", res.data.user.role);
+                navigate("/dashboard");
+              }
+            } catch (err) {
+              console.error("Google sign-in failed", err);
+              setErrorMsg("Google sign-in failed");
+            }
+          },
+        });
+
+        const el = document.getElementById("googleSignIn");
+        if (el) {
+          window.google.accounts.id.renderButton(el, {
+            theme: "outline",
+            size: "large",
+          });
         }
       }
     };
 
-    // load script
-    const id = 'gsi-script';
-    if (!document.getElementById(id)) {
-      const s = document.createElement('script');
-      s.id = id;
-      s.src = 'https://accounts.google.com/gsi/client';
+    if (!document.getElementById("gsi-script")) {
+      const s = document.createElement("script");
+      s.id = "gsi-script";
+      s.src = "https://accounts.google.com/gsi/client";
       s.async = true;
       s.defer = true;
       s.onload = onLoad;
@@ -80,33 +82,20 @@ export default function LoginPage() {
     setErrorMsg("");
     setLoading(true);
 
-    if (!email || !password) {
-      setErrorMsg("✗ Please fill in all fields");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
+      const res = await api.post("/auth/login", { email, password });
 
-      if (response.data.success) {
-        // Store token and user data
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("name", response.data.user.fullName || response.data.user.username);
-        localStorage.setItem("role", response.data.user.role);
-        localStorage.setItem("userEmail", response.data.user.email);
-        localStorage.setItem("username", response.data.user.username);
-        
-        // Navigate to dashboard
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem(
+          "name",
+          res.data.user.fullName || res.data.user.username
+        );
+        localStorage.setItem("role", res.data.user.role);
         navigate("/dashboard");
       }
-    } catch (error) {
-      setErrorMsg(
-        error.response?.data?.message || "✗ Invalid email or password"
-      );
+    } catch (err) {
+      setErrorMsg("✗ Invalid email or password");
     } finally {
       setLoading(false);
     }
