@@ -46,7 +46,8 @@ export default function Opportunities() {
     // try to load from server, fallback to localStorage
     const fetchItems = async () => {
       try {
-        const res = await fetch("/api/opportunities");
+        const token = localStorage.getItem('token');
+        const res = await fetch("/api/opportunities", { headers: token ? { Authorization: `Bearer ${token}` } : {} });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
@@ -85,7 +86,10 @@ export default function Opportunities() {
           <OpportunityForm onSave={async (data) => {
             // try server POST
             try {
-              const res = await fetch('/api/opportunities', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+              const token = localStorage.getItem('token');
+              const headers = { 'Content-Type': 'application/json' };
+              if (token) headers.Authorization = `Bearer ${token}`;
+              const res = await fetch('/api/opportunities', { method: 'POST', headers, body: JSON.stringify(data) });
               if (res.ok) {
                 const created = await res.json();
                 setItems(prev => [created, ...prev]);
@@ -119,7 +123,10 @@ export default function Opportunities() {
           <OpportunityForm initialData={existing} onSave={async (data) => {
             // try server PUT
             try {
-              const res = await fetch(`/api/opportunities/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+              const token = localStorage.getItem('token');
+              const headers = { 'Content-Type': 'application/json' };
+              if (token) headers.Authorization = `Bearer ${token}`;
+              const res = await fetch(`/api/opportunities/${id}`, { method: 'PUT', headers, body: JSON.stringify(data) });
               if (res.ok) {
                 const updated = await res.json();
                 setItems(prev => prev.map(it => it.id === id ? updated : it));
@@ -176,7 +183,10 @@ export default function Opportunities() {
                     if (!confirm('Delete this opportunity?')) return;
                     // try server delete
                     try {
-                      const res = await fetch(`/api/opportunities/${it.id}`, { method: 'DELETE' });
+                      const token = localStorage.getItem('token');
+                      const headers = {};
+                      if (token) headers.Authorization = `Bearer ${token}`;
+                      const res = await fetch(`/api/opportunities/${it.id}`, { method: 'DELETE', headers });
                       if (res.ok) {
                         setItems(prev => prev.filter(x => x.id !== it.id));
                         showToast('success', 'Opportunity deleted');
