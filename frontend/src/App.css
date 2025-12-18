@@ -1,0 +1,143 @@
+:root {
+  --green: #065f46;
+  --link: #3b82f6;
+  --card-bg: rgba(255, 255, 255, 0.65);
+  font-family: 'Cause', sans-serif;
+  color: #111827;
+  background-color: #ffffff;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; padding: 0; color: inherit; background-color: inherit; }
+a { color: var(--link); text-decoration: none; }
+
+.auth-dark { background: #0b1220; color: #e5e7eb; min-height: 100vh; }
+.auth-light { background: transparent; color: #111827; min-height: 100vh; }
+
+.auth-dark .brand-name, .auth-dark .headline, .auth-dark .subtext, .auth-dark .input-label, .auth-dark .bottom-text, .auth-dark .register-link { color: white; }
+.auth-light .brand-name { color: #111827; }
+.auth-light .headline { color: #111827; }
+.auth-light .subtext { color: #6b7280; }
+.auth-light .input-label { color: #111827; }
+
+.main-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background-image: url("C:\Users\Sruthi\waste-zero-nov-team02\frontend\public\image.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left-section { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+.brand-header { display: flex; align-items: center; gap: 1rem; }
+.brand-icon { width: 80px; height: 72px; object-fit: contain; }
+.brand-name { font-size: 3rem; font-weight: 700; color: white; }
+.headline { font-size: 2.5rem; font-weight: 700; color: white; margin: 0; }
+.subtext { font-size: 1.05rem; color: white; opacity: 0.95; margin: 0; }
+
+.right-section { flex: 0 0 420px; display: flex; justify-content: center; }
+.login-card, .register-card, .reset-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.2rem;
+  border-radius: 24px;
+  background: var(--card-bg);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.16);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.form-wrapper { display: flex; flex-direction: column; gap: 1.2rem; }
+.input-group { display: flex; flex-direction: column; gap: .4rem; }
+.input-label { font-size: .9rem; font-weight: 600; color: white; }
+.required, .required-mark { color: #ef4444; }
+.password-wrapper { position: relative; }
+.input-field, .select-field {
+  width: 100%;
+  padding: .85rem 1rem;
+  border-radius: 50px;
+  border: 1.5px solid #d1d5db;
+  font-size: .95rem;
+  color: #111827;
+  background: rgba(255,255,255,0.95);
+  outline: none;
+  transition: .2s;
+}
+.input-field:focus, .select-field:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(6,95,70,0.14); }
+.select-field { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #666 50%), linear-gradient(135deg, #666 50%, transparent 50%); background-position: calc(100% - 20px) calc(50% - 3px), calc(100% - 15px) calc(50% - 3px); background-repeat: no-repeat; background-size: 7px 7px; cursor: pointer; }
+
+.show-password-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--link);
+  font-weight: 600;
+}
+
+.login-btn, .register-btn, .reset-btn, .verify-btn {
+  width: 100%;
+  padding: .95rem;
+  border: none;
+  border-radius: 40px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--green);
+  cursor: pointer;
+  transition: .2s;
+  box-shadow: 0 6px 18px rgba(6,95,70,.24);
+}
+.login-btn:hover, .register-btn:hover, .reset-btn:hover, .verify-btn:hover { background: #054d38; transform: translateY(-1px); }
+
+.back-link, .register-text, .bottom-text { text-align: center; font-size: .9rem; color: white; }
+.register-link, .bottom-link { color: var(--link); font-weight: 600; cursor: pointer; }
+
+.toast-wrapper { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
+.toast { padding: 12px 20px; border-radius: 12px; color: white; font-weight: 600; box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
+.toast.success { background: #065f46; }
+.toast.error { background: #d0342c; }
+
+.footer-bar {
+  width: 100%;
+  background: #4b5563;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 12px;
+}
+
+@media (max-width: 1024px) {
+  .content-container { flex-direction: column; text-align: center; gap: 2rem; }
+  .right-section { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 768px) {
+  .main-wrapper { padding: 1.2rem; }
+  .brand-name { font-size: 2.6rem; }
+  .headline { font-size: 2rem; }
+  .login-card, .register-card, .reset-card { max-width: 360px; padding: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .brand-name { font-size: 2.2rem; }
+  .headline { font-size: 1.7rem; }
+  .login-card, .register-card, .reset-card { max-width: 300px; padding: 1.4rem; }
+}
+

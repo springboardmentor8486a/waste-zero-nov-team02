@@ -1,165 +1,125 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import heroImage from "./assets/download.jpg";
-import logoImage from "./assets/lo.png";
-import ld from "./assets/lod.png";
 
 export default function WelcomePage() {
-  useEffect(() => {
-    const id = "welcome-page-styles";
-    if (document.getElementById(id)) return;
-    const style = document.createElement("style");
-    style.id = id;
-    style.textContent = `
-      :root { 
-        --green:#00a32a; 
-        --link:#3b82f6; 
-        --muted:#374151; 
-        --card-bg:rgba(255,255,255,0.65); 
-      }
-      html,body,#root{height:100%}
-      .welcome-wrapper{
-        min-height:100vh;
-        width:100%;
-        background-image:url("${heroImage}");
-        background-size:cover;
-        background-position:center;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:2rem;
-      }
-      .welcome-container{
-        width:100%;
-        max-width:1200px;
-        display:flex;
-        gap:4rem;
-        align-items:center;
-        justify-content:space-between;
-      }
-      .welcome-left{flex:1;display:flex;flex-direction:column;gap:2rem}
-      .welcome-brand{display:flex;align-items:center;gap:1rem}
-      .welcome-logo{width:91px;height:82px;object-fit:contain}
-      .welcome-name{font-size:4.5rem;font-weight:700;color:white;letter-spacing:-0.5px}
-      .welcome-headline{font-size:3rem;font-weight:700;color:white;line-height:1.2}
-      .welcome-subtext{font-size:1.125rem;color:white;opacity:.95;line-height:1.6;max-width:520px}
-      .welcome-actions{display:flex;gap:1rem;flex-wrap:wrap}
-      .welcome-btn{
-        padding:0.95rem 1.5rem;border:none;border-radius:50px;
-        font-size:1rem;font-weight:700;cursor:pointer;transition:.3s;
-        text-decoration:none;
-      }
-      .welcome-btn.primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(0,163,42,.3);}
-      .welcome-btn.primary:hover{background:#008c24;transform:translateY(-2px);}
-      .welcome-btn.ghost{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.35);}
-      .welcome-btn.ghost:hover{background:rgba(255,255,255,0.25);transform:translateY(-2px);}
-      .welcome-card{
-        flex:0 0 420px;
-        padding:2.5rem;
-        border-radius:28px;
-        background:rgba(255,255,255,0.78);
-        backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-        box-shadow:0 8px 32px rgba(0,0,0,0.12);
-        border:1px solid rgba(255,255,255,0.6);
-        display:flex;
-        flex-direction:column;
-        gap:1.25rem;
-      }
-      .welcome-card h3{margin:0;font-size:1.5rem;font-weight:700;color:#0b1727;}
-      .welcome-card p{margin:0;font-size:1rem;color:#1f2937;line-height:1.5;}
-      .welcome-links{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.5rem;}
-      .welcome-link{color:var(--link);font-weight:600;text-decoration:none;cursor:pointer;}
-      .welcome-link:hover{text-decoration:underline;opacity:.85;}
-      .welcome-link-btn{
-        padding:0.65rem 1rem;
-        border-radius:14px;
-        background:rgba(255,255,255,0.12);
-        border:1px solid rgba(255,255,255,0.7);
-        color:#ffffff;
-        font-weight:700;
-        text-decoration:none;
-        transition:.25s ease;
-        display:inline-block;
-      }
-      .welcome-link-btn:hover{
-        background:rgba(255,255,255,0.22);
-        transform:translateY(-1px);
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --green:#00ff66;
-          --link:#60a5fa;
-          --muted:#d1d5db;
-          --card-bg:rgba(20,20,20,0.55);
-        }
-        body { background:#000 !important; color:#f5f5f5; }
-        .welcome-wrapper { background-image:url("${ld}") !important; }
-        .welcome-name,.welcome-headline,.welcome-subtext { color:#ffffff !important; }
-        .welcome-card { background:rgba(25,25,25,0.68); border:1px solid rgba(255,255,255,0.1); }
-        .welcome-card h3 { color:#f8fafc; }
-        .welcome-card p { color:#d1d5db; }
-        .welcome-btn.ghost { color:#fff; border-color:rgba(255,255,255,0.3); }
-      }
-      @media (max-width: 1024px) {
-        .welcome-container {
-          flex-direction: column;
-          gap: 2rem;
-          text-align: center;
-          padding: 1rem;
-        }
-        .welcome-left {
-          justify-content: center;
-          align-items: center;
-        }
-        .welcome-headline { font-size: 2.5rem; }
-        .welcome-name { font-size: 3.5rem; }
-        .welcome-subtext { font-size: 1rem; }
-        .welcome-card { width:100%; max-width: 460px; }
-      }
-      @media (max-width: 640px) {
-        .welcome-wrapper { padding:1.25rem; }
-        .welcome-name { font-size: 2.6rem; }
-        .welcome-headline { font-size: 2rem; }
-        .welcome-card { padding: 1.8rem; }
-      }
-    `;
-    document.head.appendChild(style);
-  }, []);
-
   return (
-    <div className="welcome-wrapper" role="main">
-      <div className="welcome-container">
-        <div className="welcome-left">
-          <div className="welcome-brand">
-            <img src={logoImage} alt="WasteZero logo" className="welcome-logo" />
-            <h1 className="welcome-name">WasteZero</h1>
+    <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Cause', sans-serif" }}>
+      {/* Hero Section */}
+      <section 
+        className="flex-1 relative flex items-center p-6 md:p-12 min-h-screen"
+        style={{
+          backgroundImage: "url('/image.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* WasteWise Name - Top Left */}
+        <h1 className="absolute top-6 left-6 md:top-8 md:left-12 text-3xl md:text-4xl font-bold text-white z-20" style={{ fontFamily: "'Cause', sans-serif" }}>
+          WasteWise
+        </h1>
+        
+        {/* Login and Register Buttons - Top Right */}
+        <div className="absolute top-6 right-6 md:top-8 md:right-12 flex gap-4 z-20">
+          <Link 
+            to="/login" 
+            className="px-8 py-3 rounded-[40px] text-base font-semibold cursor-pointer transition-all duration-300 bg-waste-dark-green text-white hover:bg-[#054d38] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-waste-dark-green/30"
+            style={{ fontFamily: "'Cause', sans-serif" }}
+          >
+            Login
+          </Link>
+          <Link 
+            to="/register" 
+            className="px-8 py-3 rounded-[40px] text-base font-semibold cursor-pointer transition-all duration-300 bg-waste-dark-green text-white hover:bg-[#054d38] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-waste-dark-green/30"
+            style={{ fontFamily: "'Cause', sans-serif" }}
+          >
+            Register
+          </Link>
+        </div>
+        <div className="max-w-7xl w-full mx-auto flex items-center gap-2 md:gap-3 relative z-10 flex-col lg:flex-row mt-16 md:mt-0">
+          <div className="flex flex-col gap-2 flex-1">
+            <div className="relative w-[250px] h-[250px] md:w-[300px] md:h-[300px] flex items-center justify-center mx-auto lg:mx-0">
+              <img 
+                src="/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png" 
+                alt="Garbage truck with recycling symbol" 
+                 className="w-full h-full object-contain relative -top-16 left-48"
+              />
+            </div>
           </div>
-          <div>
-            <h2 className="welcome-headline">Together for a Cleaner Tomorrow</h2>
-            <p className="welcome-subtext">
-              Log in or create your account to schedule pickups, track messages, and keep your info up to date.
+          <div className="flex flex-col gap-6 flex-1 text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white" style={{ fontFamily: "'Cause', sans-serif" }}>
+              <span className="block">SMART WASTE SCHEDULING</span>
+              <span className="block">MADE SIMPLE</span>
+            </h2>
+            <div className="w-32 h-1.5 bg-waste-dark-green my-4 mx-auto"></div>
+            <p className="text-lg md:text-xl text-white leading-relaxed max-w-lg mx-auto" style={{ fontFamily: "'Cause', sans-serif" }}>
+              Build cleaner cities through efficient<br />
+              and eco-friendly management.
             </p>
-          </div>
-          <div className="welcome-actions">
-            <Link to="/register" className="welcome-btn primary">
-              Get Started
-            </Link>
-            <Link to="/login" className="welcome-btn ghost">
-              Go to Dashboard
+            <Link 
+              to="/register" 
+              className="px-10 py-4 bg-waste-dark-green text-white rounded-[40px] text-lg font-semibold cursor-pointer no-underline inline-block w-fit mt-2 transition-all duration-300 hover:bg-[#054d38] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-waste-dark-green/40 mx-auto"
+              style={{ fontFamily: "'Cause', sans-serif" }}
+            >
+              FIND OUT MORE
             </Link>
           </div>
         </div>
+      </section>
 
-        <div className="welcome-card" aria-label="Quick links">
-          <h3>Pick up where you left off</h3>
-          <p>Jump into your account or create one in a couple of clicks.</p>
-          <div className="welcome-links">
-            <Link to="/login" className="welcome-link-btn">Login</Link>
-            <Link to="/register" className="welcome-link-btn">Register</Link>
-            <Link to="/forgot" className="welcome-link-btn">Forgot password</Link>
+      {/* Footer */}
+      <footer className="bg-green-900 text-white p-8 md:p-12 border-t-2 border-waste-green">
+        <div className="max-w-7xl mx-auto flex justify-between items-start gap-8 flex-col md:flex-row">
+          <div className="flex flex-col gap-4 flex-1">
+            <div className="flex items-center gap-4 mb-2">
+              <img 
+                src="/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png" 
+                alt="WasteWise logo" 
+                className="w-10 h-10 object-contain"
+              />
+              <span className="text-2xl font-bold text-white" style={{ fontFamily: "'Cause', sans-serif" }}>WasteWise</span>
+            </div>
+            <p className="text-sm md:text-base text-white leading-relaxed max-w-lg" style={{ fontFamily: "'Cause', sans-serif" }}>
+              A smart, eco-friendly platform that simplifies waste scheduling and management for cleaner, sustainable communities.
+            </p>
+            <div className="flex gap-4 mt-4">
+              {/* Location Icon */}
+              <svg 
+                className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer transition-colors duration-300" 
+                fill="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              {/* X/Twitter Icon */}
+              <svg 
+                className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer transition-colors duration-300" 
+                fill="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              {/* Calendar Icon */}
+              <svg 
+                className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer transition-colors duration-300" 
+                fill="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+              </svg>
+            </div>
           </div>
-          <p style={{ marginTop: "0.5rem" }}>
-            Need help? <Link to="/help" className="welcome-link">Visit support</Link>
+        </div>
+      </footer>
+
+      {/* Copyright Banner */}
+      <div className="bg-gray-600 text-white py-4 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-xs md:text-sm text-white" style={{ fontFamily: "'Cause', sans-serif" }}>
+            COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED
           </p>
         </div>
       </div>
