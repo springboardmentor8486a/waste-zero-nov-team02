@@ -17,6 +17,9 @@ import Messages from "./Messages";
 import Opportunities from "./Opportunities";
 import Schedule from "./Schedule";
 
+import OpportunityForm from "./OpportunityForm";
+import OpportunityDetail from "./OpportunityDetail";
+
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
@@ -78,6 +81,25 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Opportunities />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ---------- OPPORTUNITY SUB-ROUTES ---------- */}
+        <Route
+          path="/opportunities/new"
+          element={
+            <ProtectedRoute>
+              <OpportunityForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/opportunities/:id"
+          element={
+            <ProtectedRoute>
+              <OpportunityDetail />
             </ProtectedRoute>
           }
         />

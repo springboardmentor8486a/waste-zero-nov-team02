@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import "./App.css";
 
+import ActivityFeed from "./components/ActivityFeed";
+import api from "./utils/api";
+
 const logo = "/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png";
 
 export default function Dashboard() {
@@ -26,9 +29,32 @@ export default function Dashboard() {
     localStorage.getItem("dashDark") === "true"
   );
 
+  const [messagesCount, setMessagesCount] = useState(0);
+
   const name = localStorage.getItem("name") || "User";
   const role = localStorage.getItem("role") || "volunteer";
   const firstLetter = name.charAt(0).toUpperCase();
+
+  useEffect(() => {
+    let mounted = true;
+
+    // Fetch only the summary/messages count for the top bar badge
+    api
+      .get("/dashboard/summary")
+      .then((res) => {
+        if (!mounted) return;
+        const payload = res.data?.data ?? res.data ?? null;
+        setMessagesCount(payload?.messages ?? 0);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setMessagesCount(0);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const id = "dashboard-inline-styles";
@@ -140,11 +166,34 @@ export default function Dashboard() {
         <main className="dash-main">
           <div className="dash-top">
             <input className="search" placeholder="Search pickups, opportunities..." />
-            <Bell size={18} />
+
+            {/* Notification bell with badge */}
+            <div style={{ position: "relative" }}>
+              <Bell size={18} />
+              {messagesCount > 0 && (
+                <span style={{
+                  position: "absolute",
+                  top: -6,
+                  right: -6,
+                  background: "red",
+                  color: "white",
+                  borderRadius: "50%",
+                  fontSize: "10px",
+                  padding: "2px 6px",
+                  lineHeight: 1,
+                  minWidth: 18,
+                  textAlign: "center",
+                  boxSizing: "border-box"
+                }}>
+                  {messagesCount}
+                </span>
+              )}
+            </div>
+
             <div className="avatar">{firstLetter}</div>
           </div>
 
-          {/* ✅ SHOW OVERVIEW ONLY ON /dashboard */}
+          {/* SHOW OVERVIEW ONLY ON /dashboard */}
           {location.pathname === "/dashboard" && <Overview />}
 
           {/* Other pages */}
@@ -155,34 +204,69 @@ export default function Dashboard() {
   );
 }
 
-/* ================= HONEST OVERVIEW ================= */
+/* ================= DASHBOARD OVERVIEW (fetches summary + shows activity) ================= */
 
 export function Overview() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+
+    api
+      .get("/dashboard/summary")
+      .then((res) => {
+        if (!mounted) return;
+        // support both { data } and direct payload shapes
+        const payload = res.data?.data ?? res.data ?? null;
+        setData(payload);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setData(null);
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ display: "grid", gap: "1.5rem" }}>
+        <div className="card">Loading dashboard data…</div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "grid", gap: "1.5rem" }}>
       <div className="card">
-        <div className="card-title">Account Overview</div>
-        <p className="muted">
-          This dashboard displays real data only. No activity has been recorded yet.
-        </p>
-      </div>
-
-      <div className="card">
-        <div className="card-title">Current Status</div>
+        <div className="card-title">Dashboard Summary</div>
         <ul className="muted" style={{ lineHeight: 1.8 }}>
-          <li>• Pickups: none scheduled</li>
-          <li>• Opportunities: none joined / posted</li>
-          <li>• Messages: none</li>
-          <li>• Impact: not calculated</li>
+          <li>• Opportunities created: {data?.opportunities ?? 0}</li>
+          <li>• Applications submitted: {data?.applications ?? 0}</li>
+          <li>• Messages received: {data?.messages ?? 0}</li>
+          <li>• Impact score: {data?.impact ?? "Not available yet"}</li>
         </ul>
       </div>
 
       <div className="card">
-        <div className="card-title">What you can do next</div>
+        <div className="card-title">Account Overview</div>
         <p className="muted">
-          Use the menu on the left to begin scheduling pickups, exploring opportunities,
-          or updating your profile.
+          This dashboard displays real data only. Use the menu on the left to begin scheduling pickups,
+          exploring opportunities, or updating your profile.
         </p>
+      </div>
+
+      <div className="card">
+        <div className="card-title">Recent Activity</div>
+        <ActivityFeed />
       </div>
     </div>
   );

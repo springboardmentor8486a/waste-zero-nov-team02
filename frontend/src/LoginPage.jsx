@@ -136,7 +136,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+      <div className="footer-bar">COPYRIGHT 2025 WASTEWISE.COM ALL RIGHTS RESERVED</div>
     </div>
   );
 }

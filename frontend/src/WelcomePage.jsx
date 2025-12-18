@@ -119,7 +119,7 @@ export default function WelcomePage() {
       <div className="bg-gray-600 text-white py-4 px-6 md:px-12">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-xs md:text-sm text-white" style={{ fontFamily: "'Cause', sans-serif" }}>
-            COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED
+            COPYRIGHT 2025 WASTEWISE.COM ALL RIGHTS RESERVED
           </p>
         </div>
       </div>

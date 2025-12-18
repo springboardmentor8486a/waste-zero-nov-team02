@@ -61,7 +61,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="flex items-end md:justify-end text-xs text-white" style={{ fontFamily: "'Cause', sans-serif" }}>
-            © 2024 WasteWise.com. All rights reserved.
+            © 2025 WasteWise.com. All rights reserved.
           </div>
         </div>
       </footer>
