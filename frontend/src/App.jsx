@@ -25,6 +25,9 @@ import Messages from "./Messages";
 import Opportunities from "./Opportunities";
 import Schedule from "./Schedule";
 
+import OpportunityForm from "./OpportunityForm";
+import OpportunityDetail from "./OpportunityDetail";
+
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
@@ -62,6 +65,92 @@ export default function App() {
           <Route path="/help" element={<Help />} />
         </Route>
 
+<<<<<<< HEAD
+=======
+        {/* ---------- OTHER PROTECTED PAGES ---------- */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/impact"
+          element={
+            <ProtectedRoute>
+              <MyImpact />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/schedule"
+          element={
+            <ProtectedRoute>
+              <Schedule />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/opportunities"
+          element={
+            <ProtectedRoute>
+              <Opportunities />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ---------- OPPORTUNITY SUB-ROUTES ---------- */}
+        <Route
+          path="/opportunities/new"
+          element={
+            <ProtectedRoute>
+              <OpportunityForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/opportunities/:id"
+          element={
+            <ProtectedRoute>
+              <OpportunityDetail />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <Messages />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/help"
+          element={
+            <ProtectedRoute>
+              <Help />
+            </ProtectedRoute>
+          }
+        />
+
+>>>>>>> 1650e40257e0b4ec1a4810b8567af1802cea50e0
         {/* ---------- FALLBACK ---------- */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
 
