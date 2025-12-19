@@ -1,14 +1,10 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// =======================================
-// Protect routes middleware
-// =======================================
 const protect = async (req, res, next) => {
-  let token;
-
   try {
-    // 1️⃣ Get token from Authorization header
+    let token;
+
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
@@ -16,7 +12,6 @@ const protect = async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
     }
 
-    // 2️⃣ If no token
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -24,10 +19,8 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // 3️⃣ Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 4️⃣ Attach user to request
     const user = await User.findById(decoded.id).select('-password');
 
     if (!user) {
@@ -38,12 +31,9 @@ const protect = async (req, res, next) => {
     }
 
     req.user = user;
-
-    // 5️⃣ VERY IMPORTANT
-    next(); // ✅ this fixes "next is not a function"
+    next();
   } catch (error) {
     console.error('❌ AUTH MIDDLEWARE ERROR:', error.message);
-
     return res.status(401).json({
       success: false,
       message: 'Not authorized'
@@ -51,4 +41,4 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+module.exports = protect;
