@@ -1,29 +1,12 @@
-import { useNavigate } from "react-router-dom";
-
 export default function PageHeader({ title, subtitle }) {
-  const navigate = useNavigate();
-
   return (
-    <div className="flex items-center justify-between mb-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        {subtitle && (
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {subtitle}
-          </p>
-        )}
-      </div>
-
-      <button
-        onClick={() => navigate("/dashboard")}
-        className="px-4 py-2 rounded-lg text-sm font-medium
-                   bg-gray-100 dark:bg-gray-800
-                   text-gray-800 dark:text-gray-100
-                   hover:bg-gray-200 dark:hover:bg-gray-700
-                   transition"
-      >
-        ← Back to Dashboard
-      </button>
+    <div className="mb-6">
+      <h1 className="text-2xl font-semibold">{title}</h1>
+      {subtitle && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }
