@@ -40,6 +40,11 @@ const userSchema = new mongoose.Schema(
     fullName: { type: String, trim: true },
     location: { type: String, trim: true },
     skills: { type: [String], default: [] },
+    // Per-user settings persisted for cross-device preferences
+    settings: {
+      type: Object,
+      default: {},
+    },
 
     googleId: { type: String, unique: true, sparse: true },
     isGoogleUser: { type: Boolean, default: false },

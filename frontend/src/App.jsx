@@ -1,3 +1,11 @@
+
+//import NgoDashboard from "./NgoDashboard";
+
+//function App() {
+ // return <NgoDashboard />;
+//}
+
+//export default App;
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import WelcomePage from "./WelcomePage";
@@ -20,6 +28,9 @@ import Schedule from "./Schedule";
 import OpportunityForm from "./OpportunityForm";
 import OpportunityDetail from "./OpportunityDetail";
 
+import AvailablePickups from "./AvailablePickups";
+import MySchedule from "./MySchedule";
+import MyPickups from "./MyPickups";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
@@ -44,10 +55,22 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          {/* DEFAULT DASHBOARD PAGE */}
-          <Route index element={<Overview />} />
+          {/* Dashboard default overview */}
+          <Route path="/dashboard" element={<Overview />} />
+          {/* Other pages rendered inside the dashboard layout */}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/impact" element={<MyImpact />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/opportunities/new" element={<Opportunities />} />
+          <Route path="/opportunities/edit/:id" element={<Opportunities />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/help" element={<Help />} />
         </Route>
 
+<<<<<<< HEAD
+=======
         {/* ---------- OTHER PROTECTED PAGES ---------- */}
         <Route
           path="/profile"
@@ -131,6 +154,7 @@ export default function App() {
           }
         />
 
+>>>>>>> 1650e40257e0b4ec1a4810b8567af1802cea50e0
         {/* ---------- FALLBACK ---------- */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
 

@@ -13,11 +13,12 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // REGISTER
 router.post('/register', async (req, res) => {
   try {
-    const { email, username, password, confirmPassword, role } = req.body;
 
-    if (!email || !username || !password || !confirmPassword || !role) {
-      return res.status(400).json({ success: false, message: 'Please fill in all fields' });
-    }
+      const { email, username, password, confirmPassword } = req.body;
+
+      if (!email || !username || !password || !confirmPassword) {
+        return res.status(400).json({ success: false, message: 'Please fill in all fields' });
+      }
 
     if (password !== confirmPassword) {
       return res.status(400).json({ success: false, message: 'Passwords do not match' });
@@ -33,7 +34,17 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message });
     }
 
-    const user = await User.create({ email, username, password, role });
+    // Derive role from email domain: any domain containing 'gmail' -> volunteer, others -> ngo
+    const domain = String(email).split('@')[1] || '';
+    const derivedRole = /gmail/i.test(domain) ? 'volunteer' : 'ngo';
+
+    // Server-side validation: if client provided a `role`, ensure it matches derived role.
+    // This prevents clients from overriding role to gain elevated access during registration.
+    if (req.body.role && String(req.body.role) !== String(derivedRole)) {
+      return res.status(400).json({ success: false, message: `Role mismatch: detected '${derivedRole}' from email domain; cannot override to '${req.body.role}'.` });
+    }
+
+    const user = await User.create({ email, username, password, role: derivedRole });
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -141,6 +152,10 @@ router.post('/google', async (req, res) => {
     }
 
     const username = email.split('@')[0] + Math.floor(Math.random() * 1000);
+    // Derive role from email domain for Google signups as well
+    const domain = String(email).split('@')[1] || '';
+    const derivedRole = /gmail/i.test(domain) ? 'volunteer' : 'ngo';
+
     user = await User.create({
       email,
       username,
@@ -148,7 +163,7 @@ router.post('/google', async (req, res) => {
       isGoogleUser: true,
       isEmailVerified: true,
       fullName: name,
-      role: 'volunteer'
+      role: derivedRole
     });
 
     const token = generateToken(user._id);
