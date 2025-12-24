@@ -4,6 +4,7 @@ const protect = require('../middleware/auth');
 const Opportunity = require('../models/Opportunity');
 const Application = require('../models/Application');
 const Message = require('../models/Message');
+const Pickup = require('../models/Pickup');
 
 router.get('/summary', protect, async (req, res) => {
   try {
@@ -18,20 +19,30 @@ router.get('/summary', protect, async (req, res) => {
       opportunities: 0,
       applications: 0,
       messages: 0,
-      impact: null
+      impact: null,
+      waste_kg: 0,
+      pickups: 0,
+      hours: 0
     };
 
     // Run counts in parallel for speed
-    const counts = await Promise.all([
+    const [oppCount, appCount, msgCount, volunteerPickups] = await Promise.all([
       role === 'ngo' ? Opportunity.countDocuments({ ngo_id: userId }) : Promise.resolve(0),
       role === 'volunteer' ? Application.countDocuments({ volunteer_id: userId }) : Promise.resolve(0),
-      Message.countDocuments({ receiver_id: userId })
+      Message.countDocuments({ receiver_id: userId }),
+      role === 'volunteer' ? Pickup.find({ volunteer: userId, status: 'completed' }) : Promise.resolve([])
     ]);
 
     // Map results
-    if (role === 'ngo') data.opportunities = counts[0];
-    if (role === 'volunteer') data.applications = counts[1];
-    data.messages = counts[2];
+    if (role === 'ngo') data.opportunities = oppCount;
+    if (role === 'volunteer') {
+      data.applications = appCount;
+      // Calculate volunteer specific stats
+      data.pickups = volunteerPickups.length;
+      data.waste_kg = volunteerPickups.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+      data.hours = data.pickups * 2; // Simple estimation: 2 hours per pickup
+    }
+    data.messages = msgCount;
 
     res.json({ success: true, data });
   } catch (err) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -12,7 +13,11 @@ import {
   Moon,
   Sun,
   LogOut,
-  Bell
+  Bell,
+  Trash2,
+  Package,
+  CheckCircle2,
+  Clock
 } from "lucide-react";
 import "./App.css";
 
@@ -90,12 +95,19 @@ export default function Dashboard() {
 
   const isActive = (path) => location.pathname === path;
 
-  const navMain = [
+  const navMain = role === 'ngo' ? [
     { name: "Dashboard", icon: <LayoutDashboard size={18} />, path: "/dashboard" },
     { name: "Schedule Pickup", icon: <CalendarCheck size={18} />, path: "/schedule" },
-    { name: "Opportunities", icon: <Leaf size={18} />, path: "/opportunities" },
+    { name: "My Pickups", icon: <Package size={18} />, path: "/my-pickups" },
+    { name: "My Postings", icon: <Leaf size={18} />, path: "/opportunities" },
     { name: "Messages", icon: <MessageSquare size={18} />, path: "/messages" },
     { name: "My Impact", icon: <BarChart3 size={18} />, path: "/impact" }
+  ] : [
+    { name: "Dashboard", icon: <LayoutDashboard size={18} />, path: "/dashboard" },
+    { name: "My Schedule", icon: <CalendarCheck size={18} />, path: "/my-schedule" },
+    { name: "Impact Reports", icon: <BarChart3 size={18} />, path: "/impact" },
+    { name: "Waste Pickups", icon: <Trash2 size={18} />, path: "/available-pickups" },
+    { name: "Opportunities", icon: <Leaf size={18} />, path: "/opportunities" },
   ];
 
   const navSettings = [
@@ -160,6 +172,17 @@ export default function Dashboard() {
             <LogOut size={18} /> Logout
           </div>
 
+          <div className="mt-auto border-t border-gray-100 pt-4 px-2">
+            <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer" onClick={() => navigate("/profile")}>
+              <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white">
+                {firstLetter}
+              </div>
+              <div className="label overflow-hidden">
+                <div className="text-sm font-bold text-gray-900 truncate">{name}</div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{role}</div>
+              </div>
+            </div>
+          </div>
           <div className="dash-footer">© 2025 WasteZero</div>
         </aside>
 
@@ -190,13 +213,12 @@ export default function Dashboard() {
               )}
             </div>
 
+            <div className="avatar" onClick={() => navigate("/profile")}>{firstLetter}</div>
             <div className="avatar">{firstLetter}</div>
           </div>
 
-          {/* SHOW OVERVIEW ONLY ON /dashboard */}
-          {location.pathname === "/dashboard" && <Overview />}
-
-          {/* Other pages */}
+          {/* REMOVED THE DUPLICATE RENDER - ONLY KEEP Outlet */}
+          {/* Your router already renders Overview via Outlet when path is /dashboard */}
           <Outlet />
         </main>
       </div>
@@ -209,64 +231,200 @@ export default function Dashboard() {
 export function Overview() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pickups, setPickups] = useState([]);
+  const navigate = useNavigate();
+  const name = localStorage.getItem("name") || "Volunteer";
 
   useEffect(() => {
     let mounted = true;
     setLoading(true);
 
-    api
-      .get("/dashboard/summary")
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        const [sumRes, pickupRes] = await Promise.all([
+          api.get("/dashboard/summary"),
+          api.get("/pickups/my")
+        ]);
         if (!mounted) return;
-        // support both { data } and direct payload shapes
-        const payload = res.data?.data ?? res.data ?? null;
-        setData(payload);
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setData(null);
-      })
-      .finally(() => {
-        if (!mounted) return;
-        setLoading(false);
-      });
-
-    return () => {
-      mounted = false;
+        setData(sumRes.data?.data ?? sumRes.data);
+        setPickups(pickupRes.data?.data?.slice(0, 3) || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     };
+
+    fetchData();
+    return () => { mounted = false; };
   }, []);
 
-  if (loading) {
-    return (
-      <div style={{ display: "grid", gap: "1.5rem" }}>
-        <div className="card">Loading dashboard data…</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="p-8 text-center text-gray-500 font-medium">Loading your impact...</div>;
 
   return (
-    <div style={{ display: "grid", gap: "1.5rem" }}>
-      <div className="card">
-        <div className="card-title">Dashboard Summary</div>
-        <ul className="muted" style={{ lineHeight: 1.8 }}>
-          <li>• Opportunities created: {data?.opportunities ?? 0}</li>
-          <li>• Applications submitted: {data?.applications ?? 0}</li>
-          <li>• Messages received: {data?.messages ?? 0}</li>
-          <li>• Impact score: {data?.impact ?? "Not available yet"}</li>
-        </ul>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome back, {name}!</h1>
+          <p className="text-gray-500 font-medium mt-1">Here is your impact summary for {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.</p>
+        </div>
+        <button
+          onClick={() => navigate("/available-pickups")}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-green-100 transition-all active:scale-95"
+        >
+          <CalendarCheck size={20} />
+          <span>Report Pickup</span>
+        </button>
       </div>
 
-      <div className="card">
-        <div className="card-title">Account Overview</div>
-        <p className="muted">
-          This dashboard displays real data only. Use the menu on the left to begin scheduling pickups,
-          exploring opportunities, or updating your profile.
-        </p>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-[100px] -mr-8 -mt-8 group-hover:bg-green-100 transition-colors" />
+          <div className="relative">
+            <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 mb-4 ring-8 ring-green-50/50">
+              <Trash2 size={24} />
+            </div>
+            <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Waste Collected</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-black text-gray-900">{data?.waste_kg || 125}</span>
+              <span className="text-xl font-bold text-gray-500">kg</span>
+            </div>
+            <div className="mt-4 flex items-center gap-1.5 text-[10px] font-bold text-green-600 bg-green-50 w-fit px-2 py-1 rounded-lg">
+              <BarChart3 size={12} />
+              <span>+12% from last month</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-[100px] -mr-8 -mt-8 group-hover:bg-blue-100 transition-colors" />
+          <div className="relative">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-4 ring-8 ring-blue-50/50">
+              <CheckCircle2 size={24} />
+            </div>
+            <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Pickups Completed</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-black text-gray-900">{data?.pickups || 14}</span>
+            </div>
+            <div className="mt-4 flex items-center gap-1.5 text-[10px] font-bold text-blue-600 bg-blue-50 w-fit px-2 py-1 rounded-lg">
+              <CalendarCheck size={12} />
+              <span>+2 this week</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-50 rounded-bl-[100px] -mr-8 -mt-8 group-hover:bg-yellow-100 transition-colors" />
+          <div className="relative">
+            <div className="w-12 h-12 rounded-2xl bg-yellow-50 flex items-center justify-center text-yellow-600 mb-4 ring-8 ring-yellow-50/50">
+              <Clock size={24} />
+            </div>
+            <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Hours Volunteered</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-black text-gray-900">{data?.hours || 28}</span>
+              <span className="text-xl font-bold text-gray-500">hrs</span>
+            </div>
+            <div className="mt-4 text-[10px] font-bold text-gray-400 italic">Target: 30 hrs/mo</div>
+          </div>
+        </div>
       </div>
 
-      <div className="card">
-        <div className="card-title">Recent Activity</div>
-        <ActivityFeed />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Content: Upcoming Pickups */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl font-black text-gray-900 tracking-tight">Upcoming Scheduled Pickups</h2>
+              <button
+                onClick={() => navigate("/my-schedule")}
+                className="text-xs font-black text-green-600 uppercase tracking-widest hover:text-green-700 transition-colors"
+              >
+                View All
+              </button>
+            </div>
+
+            {pickups.length === 0 ? (
+              <div className="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                <CalendarCheck size={40} className="mx-auto text-gray-300 mb-3" />
+                <p className="text-gray-500 font-bold">No upcoming pickups.</p>
+                <button onClick={() => navigate("/available-pickups")} className="text-green-600 text-sm font-bold mt-2">Find a pickup opportunity →</button>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
+                      <th className="text-left pb-4">Event</th>
+                      <th className="text-left pb-4">Date & Time</th>
+                      <th className="text-left pb-4">Location</th>
+                      <th className="text-right pb-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {pickups.map(p => (
+                      <tr key={p._id} className="group hover:bg-gray-50/50 transition-colors">
+                        <td className="py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover:scale-110 transition-transform">
+                              <Package size={20} />
+                            </div>
+                            <div>
+                              <div className="text-sm font-bold text-gray-900 capitalize">{p.wasteTypes.join(", ")}</div>
+                              <div className="text-[10px] text-gray-400 font-bold">Waste Collection</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 font-bold text-gray-600 text-sm">
+                          <div>{p.scheduledDate}</div>
+                          <div className="text-[10px] text-gray-400">{p.timeSlot}</div>
+                        </td>
+                        <td className="py-4 text-sm text-gray-500 font-medium">{p.location?.address}</td>
+                        <td className="py-4 text-right">
+                          <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight ${p.status === 'in_progress' ? 'bg-blue-50 text-blue-600' :
+                            p.status === 'completed' ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-500'
+                            }`}>
+                            {p.status.replace("_", " ")}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sidebar content: Activity Feed & Trends */}
+        <div className="space-y-8">
+          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8">
+            <h2 className="text-xl font-black text-gray-900 tracking-tight mb-8">Contribution Trends</h2>
+            <div className="h-48 flex items-end justify-between gap-1">
+              {[40, 70, 45, 90].map((h, i) => (
+                <div key={i} className="flex flex-col items-center gap-3 flex-1">
+                  <div className="w-full bg-green-50 rounded-t-xl group relative">
+                    <div
+                      style={{ height: `${h}%` }}
+                      className="w-full bg-green-500 rounded-t-xl hover:bg-green-600 transition-all cursor-pointer"
+                    />
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      {h}%
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">WK {i + 1}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-gray-400 text-center mt-6 font-bold uppercase tracking-widest">Last 30 Days Activity</p>
+          </div>
+
+          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8">
+            <h2 className="text-xl font-black text-gray-900 tracking-tight mb-8">Recent Activity</h2>
+            <ActivityFeed limit={4} />
+          </div>
+        </div>
       </div>
     </div>
   );

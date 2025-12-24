@@ -20,6 +20,9 @@ import Schedule from "./Schedule";
 import OpportunityForm from "./OpportunityForm";
 import OpportunityDetail from "./OpportunityDetail";
 
+import AvailablePickups from "./AvailablePickups";
+import MySchedule from "./MySchedule";
+import MyPickups from "./MyPickups";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
@@ -35,102 +38,30 @@ export default function App() {
         <Route path="/otp" element={<OtpPage />} />
         <Route path="/resetpassword" element={<ResetPasswordPage />} />
 
-        {/* ---------- DASHBOARD LAYOUT (PROTECTED) ---------- */}
+        {/* ---------- PROTECTED DASHBOARD LAYOUT + CHILD PAGES ---------- */}
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           }
         >
-          {/* DEFAULT DASHBOARD PAGE */}
-          <Route index element={<Overview />} />
+          {/* Dashboard default overview */}
+          <Route path="/dashboard" element={<Overview />} />
+          {/* Other pages rendered inside the dashboard layout */}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/impact" element={<MyImpact />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/my-pickups" element={<MyPickups />} />
+          <Route path="/available-pickups" element={<AvailablePickups />} />
+          <Route path="/my-schedule" element={<MySchedule />} />
+          <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/opportunities/new" element={<Opportunities />} />
+          <Route path="/opportunities/edit/:id" element={<Opportunities />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/help" element={<Help />} />
         </Route>
-
-        {/* ---------- OTHER PROTECTED PAGES ---------- */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/impact"
-          element={
-            <ProtectedRoute>
-              <MyImpact />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/schedule"
-          element={
-            <ProtectedRoute>
-              <Schedule />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/opportunities"
-          element={
-            <ProtectedRoute>
-              <Opportunities />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ---------- OPPORTUNITY SUB-ROUTES ---------- */}
-        <Route
-          path="/opportunities/new"
-          element={
-            <ProtectedRoute>
-              <OpportunityForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/opportunities/:id"
-          element={
-            <ProtectedRoute>
-              <OpportunityDetail />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/messages"
-          element={
-            <ProtectedRoute>
-              <Messages />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/help"
-          element={
-            <ProtectedRoute>
-              <Help />
-            </ProtectedRoute>
-          }
-        />
-
         {/* ---------- FALLBACK ---------- */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
 

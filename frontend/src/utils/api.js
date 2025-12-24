@@ -59,3 +59,18 @@ export async function getMyActivity() {
 }
 
 export default api;
+
+// Decode JWT payload (no external deps) to extract user id
+export function getCurrentUserId() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const decoded = JSON.parse(decodeURIComponent(escape(window.atob(payload))));
+    return decoded.id || decoded._id || null;
+  } catch (e) {
+    return null;
+  }
+}

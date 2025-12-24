@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -13,6 +15,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Ensure uploads folder exists and serve static files
+const uploadsDir = path.join(__dirname, 'uploads');
+try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch (e) { }
+app.use('/uploads', express.static(uploadsDir));
 
 // ======================
 // API Root & Health
@@ -32,12 +39,41 @@ app.get("/api/health", (req, res) => {
 // ======================
 // Routes
 // ======================
+<<<<<<< Updated upstream
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/profile", require("./routes/profile"));
 app.use("/api/opportunities", require("./routes/opportunity"));
 app.use("/api/applications", require("./routes/application"));
 app.use("/api/activity", require("./routes/activity"));
 //app.use("/api/dashboard", require("./routes/dashboard"));
+=======
+
+// Register API routes (single, clean mount points)
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/profile', require('./routes/profile'));
+
+// Main opportunities router (public and NGO actions)
+app.use('/api/opportunities', require('./routes/opportunities'));
+
+// Optional admin-oriented opportunity routes (keeps activity logging/role checks)
+app.use('/api/opportunity-admin', require('./routes/opportunity'));
+
+// Admin utilities for uploaded files (list / cleanup orphaned uploads)
+app.use('/api/admin/uploads', require('./routes/uploads-admin'));
+
+// User settings (persisted)
+app.use('/api/settings', require('./routes/settings'));
+// Assistant endpoint (uses user settings)
+app.use('/api/assistant', require('./routes/assistant'));
+
+// Pickup scheduling
+app.use('/api/pickups', require('./routes/pickups'));
+
+// Applications and activity
+app.use('/api/applications', require('./routes/application'));
+app.use('/api/activity', require('./routes/activity'));
+
+>>>>>>> Stashed changes
 
 // ======================
 // MongoDB Connection
@@ -70,11 +106,5 @@ app.listen(PORT, () => {
 // ======================
 // Global Error Handler (LAST)
 // ======================
-app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.message);
-
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
+const errorHandler = require('./middleware/error');
+app.use(errorHandler);
