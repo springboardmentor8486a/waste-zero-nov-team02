@@ -29,6 +29,9 @@ const sendOTP = async (email, otp) => {
       `
     };
 
+    // DEV: Log OTP to console
+    console.log(`\n📧 [EMAIL MOCK] To: ${email} | OTP: ${otp}\n`);
+
     await transporter.sendMail(mailOptions);
     return true;
   } catch (error) {

@@ -51,7 +51,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-green-800 text-white">
+      <footer className="bg-[#123524] text-white">
         <div className="max-w-6xl mx-auto px-10 py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h3 className="font-semibold text-lg text-white" style={{ fontFamily: "'Cause', sans-serif" }}>WasteWise</h3>

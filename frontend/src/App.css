@@ -1,38 +1,72 @@
 :root {
-  --green: #065f46;
+  --green: #123524;
   --link: #3b82f6;
-  --card-bg: rgba(255, 255, 255, 0.65);
+  --card-bg: rgba(255, 255, 255, 0.7);
   font-family: 'Cause', sans-serif;
   color: #111827;
   background-color: #ffffff;
 }
 
-* { box-sizing: border-box; }
-html, body, #root { height: 100%; margin: 0; padding: 0; color: inherit; background-color: inherit; }
-a { color: var(--link); text-decoration: none; }
+* {
+  box-sizing: border-box;
+}
 
-.auth-dark { background: #0b1220; color: #e5e7eb; min-height: 100vh; }
-.auth-light { background: transparent; color: #111827; min-height: 100vh; }
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  background-color: inherit;
+}
 
-.auth-dark .brand-name, .auth-dark .headline, .auth-dark .subtext, .auth-dark .input-label, .auth-dark .bottom-text, .auth-dark .register-link { color: white; }
-.auth-light .brand-name { color: #111827; }
-.auth-light .headline { color: #111827; }
-.auth-light .subtext { color: #6b7280; }
-.auth-light .input-label { color: #111827; }
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.auth-dark {
+  background: #0b1220;
+  color: #e5e7eb;
+  min-height: 100vh;
+}
+
+.auth-light {
+  background: transparent;
+  color: #111827;
+  min-height: 100vh;
+}
+
+.auth-dark .brand-name,
+.auth-dark .headline,
+.auth-dark .subtext,
+.auth-dark .input-label,
+.auth-dark .bottom-text,
+.auth-dark .register-link {
+  color: white;
+}
+
+/* Removed .auth-light overrides - all text over background image should be white for readability */
 
 .main-wrapper {
   min-height: 100vh;
   width: 100%;
-  background-image: url("C:\Users\Sruthi\waste-zero-nov-team02\frontend\public\image.png");
+  background-image: url("/image.png");
   background-size: cover;
   background-position: center;
+  background-position: center;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center;  <-- Removed to prevent top cutoff on overflow */
+  /* justify-content: center; <-- Removed, using margin: auto on child */
   padding: 2rem;
+  overflow-y: auto;
+  /* Allow scrolling if tall */
 }
 
 .content-container {
+  margin: auto;
+  /* Vertically and Horizontally center safe */
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -41,43 +75,118 @@ a { color: var(--link); text-decoration: none; }
   justify-content: space-between;
 }
 
-.left-section { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
-.brand-header { display: flex; align-items: center; gap: 1rem; }
-.brand-icon { width: 80px; height: 72px; object-fit: contain; }
-.brand-name { font-size: 3rem; font-weight: 700; color: white; }
-.headline { font-size: 2.5rem; font-weight: 700; color: white; margin: 0; }
-.subtext { font-size: 1.05rem; color: white; opacity: 0.95; margin: 0; }
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-.right-section { flex: 0 0 420px; display: flex; justify-content: center; }
-.login-card, .register-card, .reset-card {
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-icon {
+  width: 80px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+}
+
+.headline {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.subtext {
+  font-size: 1.05rem;
+  color: white;
+  opacity: 0.95;
+  margin: 0;
+}
+
+.right-section {
+  flex: 0 0 420px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card,
+.register-card,
+.reset-card {
   width: 100%;
   max-width: 420px;
   padding: 2.2rem;
   border-radius: 24px;
   background: var(--card-bg);
   backdrop-filter: blur(18px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.16);
-  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.form-wrapper { display: flex; flex-direction: column; gap: 1.2rem; }
-.input-group { display: flex; flex-direction: column; gap: .4rem; }
-.input-label { font-size: .9rem; font-weight: 600; color: white; }
-.required, .required-mark { color: #ef4444; }
-.password-wrapper { position: relative; }
-.input-field, .select-field {
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.input-label {
+  font-size: .9rem;
+  font-weight: 600;
+  color: white;
+}
+
+.required,
+.required-mark {
+  color: #ef4444;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.input-field,
+.select-field {
   width: 100%;
   padding: .85rem 1rem;
   border-radius: 50px;
   border: 1.5px solid #d1d5db;
   font-size: .95rem;
   color: #111827;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   outline: none;
   transition: .2s;
 }
-.input-field:focus, .select-field:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(6,95,70,0.14); }
-.select-field { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #666 50%), linear-gradient(135deg, #666 50%, transparent 50%); background-position: calc(100% - 20px) calc(50% - 3px), calc(100% - 15px) calc(50% - 3px); background-repeat: no-repeat; background-size: 7px 7px; cursor: pointer; }
+
+.input-field:focus,
+.select-field:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.14);
+}
+
+.select-field {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #666 50%), linear-gradient(135deg, #666 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(50% - 3px), calc(100% - 15px) calc(50% - 3px);
+  background-repeat: no-repeat;
+  background-size: 7px 7px;
+  cursor: pointer;
+}
 
 .show-password-btn {
   position: absolute;
@@ -91,7 +200,10 @@ a { color: var(--link); text-decoration: none; }
   font-weight: 600;
 }
 
-.login-btn, .register-btn, .reset-btn, .verify-btn {
+.login-btn,
+.register-btn,
+.reset-btn,
+.verify-btn {
   width: 100%;
   padding: .95rem;
   border: none;
@@ -102,17 +214,57 @@ a { color: var(--link); text-decoration: none; }
   background: var(--green);
   cursor: pointer;
   transition: .2s;
-  box-shadow: 0 6px 18px rgba(6,95,70,.24);
+  box-shadow: 0 6px 18px rgba(18, 53, 36, .24);
 }
-.login-btn:hover, .register-btn:hover, .reset-btn:hover, .verify-btn:hover { background: #054d38; transform: translateY(-1px); }
 
-.back-link, .register-text, .bottom-text { text-align: center; font-size: .9rem; color: white; }
-.register-link, .bottom-link { color: var(--link); font-weight: 600; cursor: pointer; }
+.login-btn:hover,
+.register-btn:hover,
+.reset-btn:hover,
+.verify-btn:hover {
+  background: #0d281a;
+  transform: translateY(-1px);
+}
 
-.toast-wrapper { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
-.toast { padding: 12px 20px; border-radius: 12px; color: white; font-weight: 600; box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
-.toast.success { background: #065f46; }
-.toast.error { background: #d0342c; }
+.back-link,
+.register-text,
+.bottom-text {
+  text-align: center;
+  font-size: .9rem;
+  color: white;
+}
+
+.register-link,
+.bottom-link {
+  color: var(--link);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toast-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.toast.success {
+  background: #065f46;
+}
+
+.toast.error {
+  background: #d0342c;
+}
 
 .footer-bar {
   width: 100%;
@@ -124,20 +276,284 @@ a { color: var(--link); text-decoration: none; }
 }
 
 @media (max-width: 1024px) {
-  .content-container { flex-direction: column; text-align: center; gap: 2rem; }
-  .right-section { width: 100%; justify-content: center; }
+  .content-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .right-section {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 768px) {
-  .main-wrapper { padding: 1.2rem; }
-  .brand-name { font-size: 2.6rem; }
-  .headline { font-size: 2rem; }
-  .login-card, .register-card, .reset-card { max-width: 360px; padding: 2rem; }
+  .main-wrapper {
+    padding: 1.2rem;
+  }
+
+  .brand-name {
+    font-size: 2.6rem;
+  }
+
+  .headline {
+    font-size: 2rem;
+  }
+
+  .login-card,
+  .register-card,
+  .reset-card {
+    max-width: 360px;
+    padding: 2rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .brand-name { font-size: 2.2rem; }
-  .headline { font-size: 1.7rem; }
-  .login-card, .register-card, .reset-card { max-width: 300px; padding: 1.4rem; }
+  .brand-name {
+    font-size: 2.2rem;
+  }
+
+  .headline {
+    font-size: 1.7rem;
+  }
+
+  .login-card,
+  .register-card,
+  .reset-card {
+    max-width: 300px;
+    padding: 1.4rem;
+  }
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+/* Make inner text of common "card" containers dark green for better branding */
+/* Targets Tailwind-like utility classes that include 'bg-white' and common component classes */
+div[class*="bg-white"],
+div[class*="bg-white/"],
+.profile-card,
+.field-card,
+.card,
+.login-card,
+.register-card,
+.reset-card {
+  color: #123524 !important;
+}
+
+/* Ensure smaller text elements inside cards inherit the dark green */
+div[class*="bg-white"] *,
+div[class*="bg-white/"] *,
+.profile-card *,
+.field-card *,
+.card *,
+.login-card *,
+.register-card *,
+.reset-card * {
+  color: #123524 !important;
+}
+
+/* Primary button styling (brand dark green) */
+button.primary,
+button.btn,
+.btn-primary,
+.btn.primary,
+.btn-save,
+.btn-upload,
+.btn-accept,
+.login-btn,
+.register-btn,
+.reset-btn,
+.verify-btn,
+.fp-add,
+.fp-signout,
+.btn {
+  background: var(--green) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+button.primary:hover,
+.btn-primary:hover,
+.btn.primary:hover,
+.btn-save:hover,
+.login-btn:hover,
+.register-btn:hover,
+.reset-btn:hover,
+.verify-btn:hover,
+.fp-add:hover,
+.fp-signout:hover,
+.btn:hover {
+  background: #0d281a !important;
+}
+
+/* Keep ghost/outline buttons readable by not forcing color when they explicitly use bg-white or other bg classes */
+button[class*="bg-white"],
+.btn.ghost,
+.btn-cancel {
+  background: white !important;
+  color: #374151 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Dark green buttons - ensure white text for all states and all content inside */
+button.bg-\[#123524\] *,
+button[style*="background-color: #123524"] *,
+button[style*="background-color:#123524"] * {
+  color: #ffffff !important;
+}
+
+button.bg-\[#123524\]:hover *,
+button[style*="background-color: #123524"]:hover *,
+button[style*="background-color:#123524"]:hover * {
+  color: #ffffff !important;
+}
+
+button.bg-\[#123524\]:active *,
+button[style*="background-color: #123524"]:active *,
+button[style*="background-color:#123524"]:active * {
+  color: #ffffff !important;
+}
+
+button.bg-\[#123524\]:disabled *,
+button[style*="background-color: #123524"]:disabled *,
+button[style*="background-color:#123524"]:disabled * {
+  color: #ffffff !important;
+}
+
+/* All green buttons - ensure white text for all states and all content inside */
+button[class*="bg-green"] *,
+button[class*="bg-waste-green"] *,
+button[style*="background-color: #059669"] *,
+button[style*="background-color:#059669"] *,
+button[style*="background-color: #10b981"] *,
+button[style*="background-color:#10b981"] *,
+button[style*="background-color: #00a32a"] *,
+button[style*="background-color:#00a32a"] *,
+button[style*="background-color: #065f46"] *,
+button[style*="background-color:#065f46"] * {
+  color: #ffffff !important;
+}
+
+button[class*="bg-green"]:hover *,
+button[class*="bg-waste-green"]:hover *,
+button[style*="background-color: #059669"]:hover *,
+button[style*="background-color:#059669"]:hover *,
+button[style*="background-color: #10b981"]:hover *,
+button[style*="background-color:#10b981"]:hover *,
+button[style*="background-color: #00a32a"]:hover *,
+button[style*="background-color:#00a32a"]:hover *,
+button[style*="background-color: #065f46"]:hover *,
+button[style*="background-color:#065f46"]:hover * {
+  color: #ffffff !important;
+}
+
+button[class*="bg-green"]:active *,
+button[class*="bg-waste-green"]:active *,
+button[style*="background-color: #059669"]:active *,
+button[style*="background-color:#059669"]:active *,
+button[style*="background-color: #10b981"]:active *,
+button[style*="background-color:#10b981"]:active *,
+button[style*="background-color: #00a32a"]:active *,
+button[style*="background-color:#00a32a"]:active *,
+button[style*="background-color: #065f46"]:active *,
+button[style*="background-color:#065f46"]:active * {
+  color: #ffffff !important;
+}
+
+button[class*="bg-green"]:disabled *,
+button[class*="bg-waste-green"]:disabled *,
+button[style*="background-color: #059669"]:disabled *,
+button[style*="background-color:#059669"]:disabled *,
+button[style*="background-color: #10b981"]:disabled *,
+button[style*="background-color:#10b981"]:disabled *,
+button[style*="background-color: #00a32a"]:disabled *,
+button[style*="background-color:#00a32a"]:disabled *,
+button[style*="background-color: #065f46"]:disabled *,
+button[style*="background-color:#065f46"]:disabled * {
+  color: #ffffff !important;
+}
+
+/* React Phone Input Overrides */
+.react-tel-input .form-control {
+  width: 100% !important;
+  height: 48px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: black !important;
+  border-radius: 12px !important;
+  padding-left: 48px !important;
+  transition: all 0.3s ease;
+}
+
+.react-tel-input .form-control:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: none !important;
+}
+
+.react-tel-input .flag-dropdown {
+  background: transparent !important;
+  border: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.react-tel-input .selected-flag {
+  background: transparent !important;
+  padding-left: 12px !important;
+}
+
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.react-tel-input .country-list {
+  background: #1a4d33 !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-tel-input .country-list .country:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.react-tel-input .country-list .country.highlight {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.react-tel-input .country-list .search {
+  background-color: #1a4d33 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.react-tel-input .country-list .search-box {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Light Mode Overrides for OTP Page and others */
+.auth-light .react-tel-input .form-control {
+  background: white !important;
+  color: #333 !important;
+  border: 1px solid #ddd !important;
+}
+
+.auth-light .react-tel-input .country-list {
+  background: white !important;
+  color: #333 !important;
+}

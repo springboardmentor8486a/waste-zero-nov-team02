@@ -6,7 +6,7 @@ const logoSrc = "/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png";
 
 export default function OtpPage() {
   const navigate = useNavigate();
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -15,7 +15,7 @@ export default function OtpPage() {
     const updated = [...otp];
     updated[index] = value;
     setOtp(updated);
-    if (value && index < 3) {
+    if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`)?.focus();
     }
   };
@@ -23,15 +23,15 @@ export default function OtpPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const code = otp.join("");
-    if (code.length !== 4) {
-      setErrorMsg("✗ Please enter full OTP");
+    if (code.length !== 6) {
+      setErrorMsg("Please enter full OTP");
       return;
     }
     if (code === "1234") {
-      setSuccessMsg("✓ OTP Verified Successfully");
+      setSuccessMsg("OTP Verified Successfully");
       setTimeout(() => navigate("/resetpassword"), 800);
     } else {
-      setErrorMsg("✗ Invalid OTP");
+      setErrorMsg("Invalid OTP");
     }
   };
 
@@ -92,7 +92,13 @@ export default function OtpPage() {
   }, []);
 
   return (
-    <div className="auth-light">
+    <div className="auth-dark">
+      {/* ===== TOAST MESSAGES ===== */}
+      <div className="toast-wrapper">
+        {errorMsg && <div className="toast error">{errorMsg}</div>}
+        {successMsg && <div className="toast success">{successMsg}</div>}
+      </div>
+
       <div className="main-wrapper">
         <div className="content-container">
           <div className="left-section">
@@ -102,7 +108,7 @@ export default function OtpPage() {
             </div>
             <h2 className="headline">OTP Verification</h2>
             <p className="subtext">
-              Enter the 4-digit code sent to your email to continue.
+              Enter the 4-digit code sent to your email/phone to continue.
             </p>
           </div>
 
@@ -110,20 +116,47 @@ export default function OtpPage() {
             <div className="login-card">
               <form className="form-wrapper" onSubmit={handleSubmit}>
                 <label className="input-label">
-                  Enter OTP <span className="required-mark">*</span>
+                  Enter OTP <span className="required">*</span>
                 </label>
-                <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
+                <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", marginBottom: "1rem" }}>
                   {otp.map((v, i) => (
                     <input
                       key={i}
                       id={`otp-${i}`}
                       maxLength="1"
                       className="input-field"
-                      style={{ width: "55px", textAlign: "center" }}
+                      style={{ width: "55px", textAlign: "center", fontSize: "1.25rem", fontWeight: "bold" }}
                       value={v}
                       onChange={(e) => handleOtpChange(e.target.value, i)}
                     />
                   ))}
+                </div>
+
+                <div style={{ marginBottom: "1rem" }}>
+                  <button
+                    type="button"
+                    className="w-full py-2 bg-blue-50 text-[#0369a1] text-sm font-bold rounded-lg border border-blue-200 hover:bg-blue-100 flex items-center justify-center gap-2 transition-colors"
+                    onClick={async () => {
+                      try {
+                        if ('OTPCredential' in window) {
+                          const content = await navigator.credentials.get({ otp: { transport: ['sms'] } });
+                          if (content && content.code) {
+                            setOtp(content.code.split('').slice(0, 4));
+                            setSuccessMsg("✓ OTP Auto-filled!");
+                          }
+                        } else {
+                          setErrorMsg("WebOTP not supported on this device/browser");
+                          // Fallback simulation for Desktop
+                          setSuccessMsg("✓ Simulated Auto-fill (Dev)");
+                          setOtp(['1', '2', '3', '4', '5', '6']);
+                        }
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                  >
+                    ✨ Auto-fill from Messages
+                  </button>
                 </div>
 
                 <button type="submit" className="login-btn">
@@ -134,10 +167,10 @@ export default function OtpPage() {
                   <div id="googleSignInOtp" />
                 </div>
 
-                <p className="register-text">
+                <p className="bottom-text">
                   Haven’t an Account?{" "}
                   <span
-                    className="register-link"
+                    className="bottom-link"
                     onClick={(e) => {
                       e.preventDefault();
                       navigate("/register");
@@ -151,7 +184,7 @@ export default function OtpPage() {
           </div>
         </div>
       </div>
-      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+      <div className="footer-bar">COPYRIGHT 2025 WASTEWISE.COM ALL RIGHTS RESERVED</div>
     </div>
   );
 }

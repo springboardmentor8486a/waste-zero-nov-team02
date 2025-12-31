@@ -2,7 +2,7 @@
 //import NgoDashboard from "./NgoDashboard";
 
 //function App() {
- // return <NgoDashboard />;
+// return <NgoDashboard />;
 //}
 
 //export default App;
@@ -27,6 +27,16 @@ import Schedule from "./Schedule";
 
 import OpportunityForm from "./OpportunityForm";
 import OpportunityDetail from "./OpportunityDetail";
+
+import AvailablePickups from "./AvailablePickups";
+import MySchedule from "./MySchedule";
+import MyPickups from "./MyPickups";
+import MatchSuggestions from "./components/MatchSuggestions";
+import AdminOverview from "./admin/AdminOverview";
+import AdminUsers from "./admin/AdminUsers";
+import AdminOpportunities from "./admin/AdminOpportunities";
+import AdminAnalytics from "./admin/AdminAnalytics";
+import AdminLogs from "./admin/AdminLogs";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -57,100 +67,26 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/impact" element={<MyImpact />} />
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/my-pickups" element={<MyPickups />} />
+          <Route path="/available-pickups" element={<AvailablePickups />} />
+          <Route path="/my-schedule" element={<MySchedule />} />
           <Route path="/opportunities" element={<Opportunities />} />
           <Route path="/opportunities/new" element={<Opportunities />} />
           <Route path="/opportunities/edit/:id" element={<Opportunities />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
+
+          {/* Milestone 3: Match Suggestions */}
+          <Route path="/suggested-matches" element={<MatchSuggestions />} />
+
+          {/* Milestone 4: Admin Dashboard */}
+          <Route path="/admin/dashboard" element={<AdminOverview />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/opportunities" element={<AdminOpportunities />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/logs" element={<AdminLogs />} />
         </Route>
-
-<<<<<<< HEAD
-=======
-        {/* ---------- OTHER PROTECTED PAGES ---------- */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/impact"
-          element={
-            <ProtectedRoute>
-              <MyImpact />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/schedule"
-          element={
-            <ProtectedRoute>
-              <Schedule />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/opportunities"
-          element={
-            <ProtectedRoute>
-              <Opportunities />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ---------- OPPORTUNITY SUB-ROUTES ---------- */}
-        <Route
-          path="/opportunities/new"
-          element={
-            <ProtectedRoute>
-              <OpportunityForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/opportunities/:id"
-          element={
-            <ProtectedRoute>
-              <OpportunityDetail />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/messages"
-          element={
-            <ProtectedRoute>
-              <Messages />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/help"
-          element={
-            <ProtectedRoute>
-              <Help />
-            </ProtectedRoute>
-          }
-        />
-
->>>>>>> 1650e40257e0b4ec1a4810b8567af1802cea50e0
         {/* ---------- FALLBACK ---------- */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
 
