@@ -15,14 +15,6 @@ EMAIL_PASS=your_app_password
 # Google OAuth - Optional for now
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# AI Assistant API Keys (EcoBot)
-# Primary: OpenRouter API (recommended - provides ChatGPT-like responses)
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-# Fallback: Google Gemini API (used if OpenRouter fails)
-GEMINI_API_KEY=your_gemini_api_key_here
-# Optional: HTTP Referer for OpenRouter (your app URL)
-OPENROUTER_REFERRER=https://localhost:5000
 "@
 
 if (-not (Test-Path ".env")) {

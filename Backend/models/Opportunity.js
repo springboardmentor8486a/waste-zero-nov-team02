@@ -1,9 +1,15 @@
+<<<<<<< Updated upstream
+const mongoose = require("mongoose");
+
+const opportunitySchema = new mongoose.Schema(
+=======
 
 const mongoose = require('mongoose');
 
 // Consolidated Opportunity schema used by both plural and singular routes.
 // Contains fields expected by the frontend (`createdBy`) and NGO/admin routes (`ngo_id`, `status`, `required_skills`).
 const OpportunitySchema = new mongoose.Schema(
+>>>>>>> Stashed changes
   {
     // If created by a regular user (frontend), `createdBy` tracks the author.
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -43,9 +49,13 @@ const OpportunitySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+<<<<<<< Updated upstream
+module.exports = mongoose.model("Opportunity", opportunitySchema);
+=======
 // Indexes to support common queries
 OpportunitySchema.index({ ngo_id: 1 });
 OpportunitySchema.index({ status: 1 });
 OpportunitySchema.index({ location: 'text', title: 'text', short: 'text', description: 'text' });
 
 module.exports = mongoose.model('Opportunity', OpportunitySchema);
+>>>>>>> Stashed changes

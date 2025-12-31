@@ -1,11 +1,3 @@
-
-//import NgoDashboard from "./NgoDashboard";
-
-//function App() {
-// return <NgoDashboard />;
-//}
-
-//export default App;
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import WelcomePage from "./WelcomePage";
@@ -31,13 +23,6 @@ import OpportunityDetail from "./OpportunityDetail";
 import AvailablePickups from "./AvailablePickups";
 import MySchedule from "./MySchedule";
 import MyPickups from "./MyPickups";
-import MatchSuggestions from "./components/MatchSuggestions";
-import AdminOverview from "./admin/AdminOverview";
-import AdminUsers from "./admin/AdminUsers";
-import AdminOpportunities from "./admin/AdminOpportunities";
-import AdminAnalytics from "./admin/AdminAnalytics";
-import AdminLogs from "./admin/AdminLogs";
-
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
@@ -76,16 +61,6 @@ export default function App() {
           <Route path="/messages" element={<Messages />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
-
-          {/* Milestone 3: Match Suggestions */}
-          <Route path="/suggested-matches" element={<MatchSuggestions />} />
-
-          {/* Milestone 4: Admin Dashboard */}
-          <Route path="/admin/dashboard" element={<AdminOverview />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/opportunities" element={<AdminOpportunities />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-          <Route path="/admin/logs" element={<AdminLogs />} />
         </Route>
         {/* ---------- FALLBACK ---------- */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

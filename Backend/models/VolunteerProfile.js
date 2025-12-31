@@ -40,15 +40,6 @@ const VolunteerProfileSchema = new mongoose.Schema({
     availability: {
         type: String // e.g. "Weekends", "Mornings"
     },
-    totalPoints: {
-        type: Number,
-        default: 0
-    },
-    goals: {
-        points: { type: Number, default: 0 },
-        hours: { type: Number, default: 0 },
-        timeLimit: { type: Number, default: 0 }
-    },
     createdAt: {
         type: Date,
         default: Date.now

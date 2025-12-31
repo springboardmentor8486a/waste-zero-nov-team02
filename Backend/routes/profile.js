@@ -90,12 +90,9 @@ router.put('/', protect, upload.fields([{ name: 'logo', maxCount: 1 }, { name: '
     }
 
     // 1. Update basic User fields
-    const { fullName, location, skills, phoneNumber, email } = req.body;
+    const { fullName, location, skills } = req.body;
     if (fullName) user.fullName = fullName;
     if (location) user.location = location;
-    if (phoneNumber) user.phoneNumber = phoneNumber;
-    if (email) user.email = email;
-
     if (skills) {
       user.skills = Array.isArray(skills) ? skills : (skills ? skills.split(',').map(s => s.trim()) : []);
     }
@@ -149,8 +146,7 @@ router.put('/', protect, upload.fields([{ name: 'logo', maxCount: 1 }, { name: '
         address,
         city,
         country,
-        availability,
-        goals
+        availability
       } = req.body;
 
       const volFields = {
@@ -161,8 +157,7 @@ router.put('/', protect, upload.fields([{ name: 'logo', maxCount: 1 }, { name: '
         address,
         city,
         country,
-        availability,
-        goals: goals ? JSON.parse(JSON.stringify(goals)) : undefined
+        availability
       };
 
       if (skills) {

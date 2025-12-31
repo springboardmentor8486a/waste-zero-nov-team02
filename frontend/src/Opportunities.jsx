@@ -1,9 +1,70 @@
+<<<<<<< Updated upstream
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiRequest } from "./utils/api";
+=======
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react";
+>>>>>>> Stashed changes
 import PageHeader from "./components/PageHeader";
 import api, { apiRequest } from "./utils/api";
 
+<<<<<<< Updated upstream
+export default function Opportunities() {
+  const [list, setList] = useState([]);
+  const [error, setError] = useState("");
+  const role = localStorage.getItem("role");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    apiRequest("/opportunities")
+      .then(res => setList(res.data || []))
+      .catch(err => setError(err.message));
+  }, []);
+
+  return (
+    <div className="min-h-screen p-6 bg-gray-50 dark:bg-[#0f172a]">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-[#111827] rounded-xl shadow p-6">
+        
+        <PageHeader
+          title="Opportunities"
+          subtitle="Available volunteering opportunities."
+        />
+
+        {role === "ngo" && (
+          <button
+            onClick={() => navigate("/opportunities/new")}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            + Create Opportunity
+          </button>
+        )}
+
+        {error && (
+          <p className="text-red-500 mt-4">{error}</p>
+        )}
+
+        {list.length === 0 && !error && (
+          <p className="text-gray-500 dark:text-gray-400 mt-4">
+            No opportunities yet.
+          </p>
+        )}
+
+        <div className="space-y-4 mt-6">
+          {list.map(op => (
+            <OpportunityCard
+              key={op._id}
+              id={op._id}
+              title={op.title}
+              location={op.location}
+              duration={op.duration}
+              role={role}
+              navigate={navigate}
+            />
+          ))}
+        </div>
+=======
 const SAMPLE = [
   {
     id: "1",
@@ -15,20 +76,7 @@ const SAMPLE = [
     capacity: 20,
     registered_count: 15,
     status: "open",
-    cover: "https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?auto=format&fit=crop&w=800&q=80"
   },
-  {
-    id: "2",
-    title: "Beach Cleanup & Recycling",
-    short: "Help us remove plastic waste from the shoreline and sort it for recycling.",
-    date: "2024-02-10",
-    time: "08:30",
-    location: "Brighton Beach",
-    capacity: 50,
-    registered_count: 12,
-    status: "open",
-    cover: "https://images.unsplash.com/photo-1618477461853-5f8dd1dbab9a?auto=format&fit=crop&w=800&q=80"
-  }
 ];
 
 export default function Opportunities() {
@@ -53,29 +101,8 @@ export default function Opportunities() {
     apiRequest("/opportunities")
       .then((res) => {
         if (!mounted) return;
-        let data = res?.data ?? res ?? [];
-
-        // Force premium images for demo purposes (as requested by user)
-        if (Array.isArray(data)) {
-          data = data.map(item => {
-            if (item.title && item.title.toLowerCase().includes("beach")) {
-              return { ...item, cover: "https://images.unsplash.com/photo-1618477461853-5f8dd1dbab9a?auto=format&fit=crop&w=1200&q=80" };
-            }
-            if (item.title && (item.title.toLowerCase().includes("park") || item.title.toLowerCase().includes("cleanup"))) {
-              return { ...item, cover: "https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?auto=format&fit=crop&w=1200&q=80" };
-            }
-            // Fallback for others to a generic nature cleanup image if no cover
-            if (!item.cover) {
-              return { ...item, cover: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=1200&q=80" };
-            }
-            return item;
-          });
-        }
-
-        // Merge sample data if API returns empty, just for demo purposes if needed, OR just use API.
-        // For this user request, we want to ensure the sample images show up if they are using sample data.
+        const data = res?.data ?? res ?? [];
         if (Array.isArray(data) && data.length) setItems(data);
-        else setItems(SAMPLE);
       })
       .catch(() => {
         setError("");
@@ -126,8 +153,8 @@ export default function Opportunities() {
   // Create route
   if (pathname.endsWith("/new")) {
     return (
-      <div className="min-h-screen p-6 md:p-12">
-        <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-xl rounded-[32px] shadow-2xl p-10 border border-white/50">
+      <div className="min-h-screen p-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
           <PageHeader title="Create Opportunity" subtitle="Create a new volunteering opportunity." />
           <OpportunityForm
             showToast={showToast}
@@ -163,8 +190,8 @@ export default function Opportunities() {
     const id = pathname.split("/edit/")[1];
     const existing = items.find((it) => String(it._id || it.id) === String(id)) || {};
     return (
-      <div className="min-h-screen p-6 md:p-12">
-        <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-xl rounded-[32px] shadow-2xl p-10 border border-white/50">
+      <div className="min-h-screen p-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
           <PageHeader title="Edit Opportunity" subtitle="Update opportunity details." />
           <OpportunityForm
             initialData={existing}
@@ -195,37 +222,30 @@ export default function Opportunities() {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen p-6 bg-gray-50">
+      <div className="max-w-6xl mx-auto">
         {toast.visible && (
-          <div className="fixed top-10 right-10 z-[100] animate-bounce-in">
-            <div className="bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border border-emerald-500">
-              <span className="text-xl">✨</span> {toast.text}
-            </div>
+          <div style={{ position: "fixed", right: 20, top: 20, zIndex: 60 }}>
+            <div style={{ padding: "10px 14px", borderRadius: 8, background: "#d1fae5", color: "#065f46", boxShadow: "0 6px 18px rgba(0,0,0,0.12)" }}>{toast.text}</div>
           </div>
         )}
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-white drop-shadow-lg tracking-tight mb-2">Opportunities</h1>
-            <p className="text-lg text-white/90 font-normal drop-shadow-md">Browse and manage volunteering opportunities making a real impact.</p>
+            <h2 className="text-2xl font-semibold">Opportunities</h2>
+            <p className="text-sm text-gray-600">Browse and manage volunteering opportunities.</p>
           </div>
           {role === "ngo" && (
-            <button
-              onClick={() => navigate("/opportunities/new")}
-              className="bg-green-500 text-white px-8 py-3 rounded-2xl font-black shadow-lg hover:bg-green-600 transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95"
-            >
-              <span className="text-xl">+</span> Create Event
-            </button>
+            <button onClick={() => navigate("/opportunities/new")} className="bg-green-600 text-white px-4 py-2 rounded">+ Create</button>
           )}
         </div>
 
-        {/* Premium Glass Location Filter */}
-        <div className="mb-10">
-          <div className="relative max-w-lg group">
-            <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-500 group-focus-within:text-green-600 transition-colors">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        {/* Location Filter */}
+        <div className="mb-6">
+          <div className="relative max-w-md">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </span>
             <input
@@ -233,110 +253,78 @@ export default function Opportunities() {
               placeholder="Filter by location (e.g. City, Street)..."
               value={locationSearch}
               onChange={(e) => setLocationSearch(e.target.value)}
-              className="block w-full pl-12 pr-6 py-4 border-2 border-white/20 rounded-[24px] text-lg bg-white/90 backdrop-blur-xl placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-green-500/30 focus:border-white text-gray-900 font-bold shadow-xl transition-all"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm"
             />
           </div>
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-32 bg-white/20 backdrop-blur-md rounded-[32px] border border-white/20">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-              <p className="text-white font-bold text-lg animate-pulse uppercase tracking-widest">Loading Events...</p>
-            </div>
-          </div>
+          <div className="text-center py-10">Loading...</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {items
               .filter(it =>
                 !locationSearch ||
                 (it.location && it.location.toLowerCase().includes(locationSearch.toLowerCase()))
               )
               .map((it) => (
-                <div key={it._id || it.id} className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/60 overflow-hidden flex flex-col group h-full">
-                  {/* Image Area */}
-                  <div className="h-56 w-full relative overflow-hidden bg-gray-100">
-                    {it.cover ? (
-                      <img
-                        src={(it.cover && it.cover.startsWith('/uploads')) ? uploadsBase + it.cover : it.cover}
-                        alt={it.title}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
-                        <div className="text-white/50 transform rotate-12 font-black text-6xl select-none opacity-20">EVENT</div>
-                      </div>
-                    )}
-                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-black text-green-700 shadow-lg uppercase tracking-wider">
-                      {it.registered_count || 0} / {it.capacity || '∞'} Vols
-                    </div>
-                  </div>
-
-                  <div className="p-8 flex-1 flex flex-col">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="bg-green-50 text-green-700 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border border-green-100">
-                        {it.date ? new Date(it.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date TBD'}
-                      </div>
-                      <div className="text-gray-400 text-xs font-bold">{it.time}</div>
-                    </div>
-
-                    <h3 className="text-2xl font-black text-gray-900 mb-2 leading-tight group-hover:text-green-700 transition-colors">{it.title}</h3>
-
-                    <div className="flex items-center gap-2 text-gray-500 mb-4 text-sm font-medium">
-                      <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                      {it.location}
-                    </div>
-
-                    <p className="text-gray-600 mb-6 line-clamp-2 text-sm leading-relaxed">{it.short}</p>
-
-                    <div className="mt-auto pt-6 border-t border-gray-100">
-                      <div className="flex items-center justify-between gap-4">
-                        {role === "volunteer" ? (() => {
-                          const required = Array.isArray(it.required_skills) ? it.required_skills : [];
-                          const matches = required.filter(rs => userSkills.includes(rs));
-                          const pct = required.length ? (matches.length / required.length) : 0;
-                          const canApplyBySkill = required.length === 0 || matches.length > 0;
-                          const capacityFull = it.capacity != null && (it.registered_count || 0) >= it.capacity;
-                          const disabled = capacityFull || !canApplyBySkill;
-                          return (
-                            <div className="flex-1 flex gap-3 items-center">
-                              <button
-                                onClick={async () => {
-                                  if (!canApplyBySkill) { showToast('Missing required skills'); return; }
-                                  if (capacityFull) { showToast('Event Full'); return; }
-                                  try {
-                                    await apiRequest("/applications", "POST", { opportunity_id: it._id || it.id });
-                                    setItems(prev => prev.map(x => (String(x._id || x.id) === String(it._id || it.id) ? { ...x, registered_count: (x.registered_count || 0) + 1 } : x)));
-                                    showToast('Registration Successful! 🎉');
-                                  } catch (e) {
-                                    showToast(e.message || 'Failed to apply');
-                                  }
-                                }}
-                                disabled={disabled}
-                                className={`flex-1 py-3 rounded-xl font-bold shadow-lg transition-all transform active:scale-95 ${disabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:shadow-green-200/50 hover:-translate-y-1'}`}
-                              >
-                                {capacityFull ? 'Full' : 'Join Event'}
-                              </button>
-                              {required.length > 0 && pct > 0 && (
-                                <div className="text-xs font-black text-green-600 bg-green-50 px-2 py-1 rounded-lg border border-green-100">
-                                  {Math.round(pct * 100)}% Match
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })() : (
-                          <div className="flex items-center gap-3">
-                            <button onClick={() => navigate(`/opportunities/edit/${it._id || it.id}`)} className="p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors shadow-md hover:shadow-lg">
-                              <Edit2 size={20} />
+                <div key={it._id || it.id} className="bg-white rounded-lg shadow p-4 border border-gray-200">
+                  {it.cover ? (
+                    <img src={(it.cover && it.cover.startsWith('/uploads')) ? uploadsBase + it.cover : it.cover} alt={it.title} className="h-28 w-full object-cover rounded-md mb-3" />
+                  ) : (
+                    <div className="h-28 rounded-md mb-3 bg-gradient-to-r from-green-400 to-green-600" />
+                  )}
+                  <h3 className="font-semibold text-lg">{it.title}</h3>
+                  <div className="text-xs text-gray-400">{it.createdAt ? new Date(it.createdAt).toLocaleString() : ''}</div>
+                  <p className="text-sm text-gray-500 mt-1">{it.short}</p>
+                  <div className="mt-2 text-xs text-gray-500">{it.location}</div>
+                  <div className="mt-2 text-sm text-gray-700">{(it.registered_count || 0)} / {it.capacity || '—'} volunteers</div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <div className="text-xs text-gray-600">{it.notes || ''}</div>
+                    <div className="flex items-center gap-2">
+                      {role === "volunteer" && (() => {
+                        const required = Array.isArray(it.required_skills) ? it.required_skills : [];
+                        const matches = required.filter(rs => userSkills.includes(rs));
+                        const pct = required.length ? (matches.length / required.length) : 0;
+                        const canApplyBySkill = required.length === 0 || matches.length > 0;
+                        const capacityFull = it.capacity != null && (it.registered_count || 0) >= it.capacity;
+                        const disabled = capacityFull || !canApplyBySkill;
+                        return (
+                          <>
+                            <button
+                              onClick={async () => {
+                                if (!canApplyBySkill) { showToast('You cannot apply — insufficient skill match'); return; }
+                                if (capacityFull) { showToast('No slots available'); return; }
+                                try {
+                                  await apiRequest("/applications", "POST", { opportunity_id: it._id || it.id });
+                                  setItems(prev => prev.map(x => (String(x._id || x.id) === String(it._id || it.id) ? { ...x, registered_count: (x.registered_count || 0) + 1 } : x)));
+                                  showToast('Applied successfully');
+                                } catch (e) {
+                                  showToast(e.message || 'Failed to apply');
+                                }
+                              }}
+                              disabled={disabled}
+                              className={`px-3 py-1 rounded ${disabled ? 'bg-gray-200 text-gray-400' : 'bg-green-600 text-white'}`}
+                            >
+                              Apply
                             </button>
-                            <button onClick={() => setConfirmDelete({ open: true, id: it._id || it.id })} className="p-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-md hover:shadow-lg">
-                              <Trash2 size={20} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                            {required.length > 0 && (
+                              <div className="text-xs text-gray-500 ml-2">Match: {Math.round(pct * 100)}%</div>
+                            )}
+                          </>
+                        );
+                      })()}
+                      {role === "ngo" && (
+                        <>
+                          <button onClick={() => navigate(`/opportunities/edit/${it._id || it.id}`)} className="text-gray-500">
+                            <Edit2 size={16} />
+                          </button>
+                          <button onClick={() => setConfirmDelete({ open: true, id: it._id || it.id })} className="text-gray-400">
+                            <Trash2 size={16} />
+                          </button>
+                        </>
+                      )}
                     </div>
-
                   </div>
                 </div>
               ))}
@@ -349,22 +337,87 @@ export default function Opportunities() {
               <h3 className="text-lg font-semibold">Confirm deletion</h3>
               <p className="text-sm text-gray-600 mt-2">Are you sure you want to delete this opportunity? This action cannot be undone.</p>
               <div className="mt-4 flex justify-end gap-3">
-                <button onClick={() => setConfirmDelete({ open: false, id: null })} className="px-4 py-2 rounded bg-gray-100 text-gray-700 !text-gray-700 font-bold hover:bg-gray-200">Cancel</button>
-                <button onClick={() => handleDelete(confirmDelete.id)} className="px-4 py-2 rounded bg-red-600 text-white !text-white font-bold hover:bg-red-700">Delete</button>
+                <button onClick={() => setConfirmDelete({ open: false, id: null })} className="px-4 py-2 rounded bg-gray-100">Cancel</button>
+                <button onClick={() => handleDelete(confirmDelete.id)} className="px-4 py-2 rounded bg-red-600 text-white">Delete</button>
               </div>
             </div>
           </div>
         )}
+>>>>>>> Stashed changes
       </div>
     </div>
   );
 }
 
+<<<<<<< Updated upstream
+function OpportunityCard({ id, title, location, duration, role, navigate }) {
+  // Handlers for role-specific actions
+  const apply = () => {
+    // Example: call API to apply
+    apiRequest("/applications", "POST", { opportunity_id: id })
+      .then(() => alert("Applied successfully"))
+      .catch(err => alert(err.message));
+  };
+
+  const viewApplications = () => {
+    navigate(`/opportunities/${id}/applications`);
+  };
+
+  const closeOpportunity = () => {
+    apiRequest(`/opportunities/${id}`, "PUT", { status: "closed" })
+      .then(() => alert("Opportunity closed"))
+      .catch(err => alert(err.message));
+  };
+
+  return (
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-5">
+      <h3 className="font-semibold text-lg">{title}</h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        {location || "Location: Not specified"} • {duration || "Duration: N/A"}
+      </p>
+
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={() => navigate(`/opportunities/${id}`)}
+          className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+        >
+          View
+        </button>
+
+        {role === "volunteer" && (
+          <button
+            onClick={apply}
+            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Apply
+          </button>
+        )}
+
+        {role === "ngo" && (
+          <button
+            onClick={viewApplications}
+            className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+          >
+            View Applications
+          </button>
+        )}
+
+        {role === "admin" && (
+          <button
+            onClick={closeOpportunity}
+            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Close
+          </button>
+        )}
+      </div>
+    </div>
+=======
 function OpportunityForm({ initialData = {}, onSave, showToast }) {
   const [title, setTitle] = useState(initialData.title || "");
   const [description, setDescription] = useState(initialData.short || "");
-  const [date, setDate] = useState(initialData.date || new Date().toISOString().split('T')[0]);
-  const [time, setTime] = useState(initialData.time || new Date().toTimeString().slice(0, 5));
+  const [date, setDate] = useState(initialData.date || "");
+  const [time, setTime] = useState(initialData.time || "");
   const [location, setLocation] = useState(initialData.location || "");
   const [skills, setSkills] = useState(initialData.required_skills || []);
   const [skillInput, setSkillInput] = useState("");
@@ -379,8 +432,8 @@ function OpportunityForm({ initialData = {}, onSave, showToast }) {
   useEffect(() => {
     setTitle(initialData.title || "");
     setDescription(initialData.short || "");
-    setDate(initialData.date || new Date().toISOString().split('T')[0]);
-    setTime(initialData.time || new Date().toTimeString().slice(0, 5));
+    setDate(initialData.date || "");
+    setTime(initialData.time || "");
     setLocation(initialData.location || "");
     setSkills(initialData.required_skills || []);
     setCapacity(initialData.capacity ?? "");
@@ -451,91 +504,64 @@ function OpportunityForm({ initialData = {}, onSave, showToast }) {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-8">
-      <label className="block">
-        <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Title</div>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all font-medium text-lg outline-none" placeholder="e.g. Park Cleanup" />
+    <form onSubmit={submit} className="space-y-6">
+      <label>
+        <div className="text-sm font-medium mb-1">Title</div>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full px-3 py-2 rounded border" />
       </label>
 
-      <label className="block">
-        <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Short Description</div>
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all font-medium text-base outline-none resize-none" placeholder="Briefly describe the event..." />
+      <label>
+        <div className="text-sm font-medium mb-1">Short description</div>
+        <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full px-3 py-2 rounded border" />
       </label>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Date</div>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all outline-none" />
-        </div>
-        <div>
-          <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Time</div>
-          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all outline-none" />
-        </div>
-        <div>
-          <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Location</div>
-          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Central Park" className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all outline-none" />
-        </div>
+      <div className="grid grid-cols-3 gap-3">
+        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="px-3 py-2 rounded border" />
+        <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="px-3 py-2 rounded border" />
+        <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="px-3 py-2 rounded border" />
       </div>
 
       <div>
-        <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Volunteers Required</div>
-        <input type="number" min={0} value={capacity} onChange={(e) => setCapacity(e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all outline-none" placeholder="e.g. 20" />
+        <div className="text-sm font-medium mb-1">Number of volunteers required</div>
+        <input type="number" min={0} value={capacity} onChange={(e) => setCapacity(e.target.value)} className="px-3 py-2 rounded border" placeholder="e.g. 20" />
       </div>
 
       <div>
-        <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Required Skills</div>
-        <div className="flex gap-3 items-center mb-3">
-          <input value={skillInput} onChange={(e) => setSkillInput(e.target.value)} onKeyDown={onSkillKey} placeholder="Add a skill..." className="flex-1 px-5 py-3 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-green-500/50 transition-all outline-none" />
-          <button type="button" onClick={addSkill} className="px-6 py-3 bg-green-500 text-white rounded-xl font-bold hover:bg-green-600 transition-colors shadow-md transform hover:scale-105 active:scale-95">Add</button>
+        <div className="text-sm font-medium mb-1">Required Skills</div>
+        <div className="flex gap-2 items-center">
+          <input value={skillInput} onChange={(e) => setSkillInput(e.target.value)} onKeyDown={onSkillKey} placeholder="Add a skill and press Enter" className="px-3 py-2 rounded border flex-1" />
+          <button type="button" onClick={addSkill} className="px-3 py-2 bg-gray-100 rounded">Add</button>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-2">
           {skills.map((s) => (
-            <div key={s} className="px-4 py-2 bg-green-50 text-green-800 rounded-xl flex items-center gap-3 font-bold border border-green-100">
-              <span className="text-sm">{s}</span>
-              <button type="button" onClick={() => removeSkill(s)} className="text-green-600 hover:text-red-500 transition-colors">×</button>
+            <div key={s} className="px-2 py-1 bg-gray-100 rounded flex items-center gap-2">
+              <span className="text-xs">{s}</span>
+              <button type="button" onClick={() => removeSkill(s)} className="text-xs text-red-500">×</button>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Cover Image</div>
-          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-50 hover:bg-white hover:border-green-500 transition-all">
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> cover</p>
-            </div>
-            <input type="file" accept="image/*" className="hidden" onChange={(e) => setCoverFile(e.target.files[0] || null)} />
-          </label>
-          {initialData.cover && !coverFile && (
-            <div className="text-xs text-gray-500 mt-2 flex items-center gap-2">Current: <img src={(initialData.cover && initialData.cover.startsWith('/uploads')) ? (previewBase + initialData.cover) : initialData.cover} alt="cover" className="h-10 w-10 rounded object-cover" /></div>
-          )}
-          {coverFile && <div className="text-xs text-green-600 font-bold mt-2">Selected: {coverFile.name}</div>}
-        </div>
-
-        <div>
-          <div className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Attachments</div>
-          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-50 hover:bg-white hover:border-green-500 transition-all">
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Upload docs/images</span></p>
-            </div>
-            <input type="file" multiple className="hidden" onChange={(e) => setAttachments(Array.from(e.target.files || []))} />
-          </label>
-          {initialData.attachments && initialData.attachments.length > 0 && (
-            <div className="text-xs text-gray-500 mt-2">{initialData.attachments.length} existing file(s)</div>
-          )}
-          {attachments.length > 0 && <div className="text-xs text-green-600 font-bold mt-2">{attachments.length} files selected</div>}
-        </div>
+      <div>
+        <div className="text-sm font-medium mb-1">Cover image</div>
+        <input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files[0] || null)} />
+        {initialData.cover && !coverFile && (
+          <div className="text-xs text-gray-500 mt-1">Current cover: <img src={(initialData.cover && initialData.cover.startsWith('/uploads')) ? (previewBase + initialData.cover) : initialData.cover} alt="cover" className="inline-block h-12 ml-2" /></div>
+        )}
       </div>
 
-      <div className="flex justify-end gap-4 pt-8 border-t border-gray-100">
-        <button type="button" onClick={() => window.history.back()} className="px-8 py-3 rounded-2xl font-bold text-gray-500 hover:bg-gray-100 transition-colors">Cancel</button>
-        <button type="submit" className="px-10 py-3 rounded-2xl bg-green-500 text-white font-black shadow-lg hover:bg-green-600 hover:shadow-green-500/30 hover:-translate-y-0.5 transition-all transform active:scale-95 text-lg">
-          Save Opportunity
-        </button>
+      <div>
+        <div className="text-sm font-medium mb-1">Attachments (PDF, Doc, Image, etc)</div>
+        <input type="file" multiple onChange={(e) => setAttachments(Array.from(e.target.files || []))} />
+        {initialData.attachments && initialData.attachments.length > 0 && (
+          <div className="text-xs text-gray-500 mt-1">{initialData.attachments.length} existing file(s)</div>
+        )}
+      </div>
+
+      <div className="flex justify-end gap-3">
+        <button type="submit" className="px-4 py-2 rounded bg-green-600 text-white">Save</button>
       </div>
     </form>
-
-
+>>>>>>> Stashed changes
   );
 }

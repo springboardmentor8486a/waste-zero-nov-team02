@@ -1,3 +1,14 @@
+<<<<<<< Updated upstream
+export default function PageHeader({ title, subtitle }) {
+  return (
+    <div className="mb-6">
+      <h1 className="text-2xl font-semibold">{title}</h1>
+      {subtitle && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {subtitle}
+        </p>
+      )}
+=======
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,13 +28,19 @@ export default function PageHeader({ title, subtitle, dropdownContent }) {
   return (
     <div className="flex items-center justify-between mb-6">
       <div>
-        <h1 className="text-2xl font-semibold text-white">{title}</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
         {subtitle && (
-          <p className="text-sm text-white/80">{subtitle}</p>
+          <p className="text-sm text-gray-600">{subtitle}</p>
         )}
       </div>
 
       <div className="flex items-center gap-3" ref={ref}>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition"
+        >
+          ← Back to Dashboard
+        </button>
 
         {/* three-dots menu */}
         <div className="relative">
@@ -74,6 +91,7 @@ export default function PageHeader({ title, subtitle, dropdownContent }) {
           )}
         </div>
       </div>
+>>>>>>> Stashed changes
     </div>
   );
 }

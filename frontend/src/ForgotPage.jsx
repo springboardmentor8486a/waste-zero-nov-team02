@@ -13,13 +13,14 @@ export default function ForgotPage() {
   };
 
   return (
-    <div className="auth-light">
+    /* 👇 THIS WRAPPER FORCES DARK MODE */
+    <div className="auth-dark">
       <div className="main-wrapper">
         <div className="content-container">
           <div className="left-section">
             <div className="brand-header">
               <img src={logoSrc} alt="logo" className="brand-icon" />
-              <h1 className="brand-name">WasteWise</h1>
+              <h1 className="brand-name">WasteZero</h1>
             </div>
 
             <div className="text-content">
@@ -80,7 +81,7 @@ export default function ForgotPage() {
           </div>
         </div>
       </div>
-      <div className="footer-bar">COPYRIGHT 2025 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
     </div>
   );
 }

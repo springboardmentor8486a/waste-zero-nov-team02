@@ -11,9 +11,7 @@ import {
     CheckCircle2,
     Trash2,
     Map as MapIcon,
-    X,
-    AlertCircle,
-    Loader
+    X
 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
@@ -29,6 +27,8 @@ let DefaultIcon = L.icon({
     iconSize: [25, 41],
     iconAnchor: [12, 41]
 });
+L.Marker.prototype.options.icon = DefaultIcon;
+
 export default function AvailablePickups() {
     const [pickups, setPickups] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -41,14 +41,6 @@ export default function AvailablePickups() {
     const [wasteType, setWasteType] = useState('All Types');
     const [viewMode, setViewMode] = useState('grid');
     const [rejectedIds, setRejectedIds] = useState([]);
-    const [actionLoading, setActionLoading] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: "", type: "success" });
-    const [confirmModal, setConfirmModal] = useState({ open: false, pickupId: null, message: "", onConfirm: null });
-
-    const showToast = (message, type = "success") => {
-        setToast({ show: true, message, type });
-        setTimeout(() => setToast({ show: false, message: "", type: "success" }), 4000);
-    };
 
     useEffect(() => {
         fetchPickups();
@@ -66,27 +58,17 @@ export default function AvailablePickups() {
         }
     };
 
-    const handleAccept = (id) => {
-        setConfirmModal({
-            open: true,
-            pickupId: id,
-            message: "Are you sure you want to accept this pickup? You will be responsible for the collection.",
-            onConfirm: async () => {
-                try {
-                    setActionLoading(true);
-                    const res = await api.put(`/pickups/${id}/accept`);
-                    if (res.data.success) {
-                        showToast("Pickup accepted! It's now in your schedule.");
-                        fetchPickups();
-                    }
-                } catch (err) {
-                    showToast(err.response?.data?.message || "Failed to accept pickup", "error");
-                } finally {
-                    setActionLoading(false);
-                    setConfirmModal({ open: false, pickupId: null, message: "", onConfirm: null });
-                }
+    const handleAccept = async (id) => {
+        if (!window.confirm("Are you sure you want to accept this pickup? You will be responsible for the collection.")) return;
+        try {
+            const res = await api.put(`/pickups/${id}/accept`);
+            if (res.data.success) {
+                alert("Pickup accepted! It's now in your schedule.");
+                fetchPickups(); // Refresh list
             }
-        });
+        } catch (err) {
+            alert(err.response?.data?.message || "Failed to accept pickup");
+        }
     };
 
     const handleReject = (id) => {
@@ -96,10 +78,7 @@ export default function AvailablePickups() {
 
     const filteredPickups = pickups
         .filter(p => !rejectedIds.includes(p._id))
-        .filter(p => {
-            if (wasteType === 'All Types') return true;
-            return p.wasteTypes.some(type => type.toLowerCase() === wasteType.toLowerCase());
-        });
+        .filter(p => wasteType === 'All Types' || p.wasteTypes.includes(wasteType.toLowerCase()));
 
     // Inline styles for the component to avoid external CSS issues
     const styles = `
@@ -108,7 +87,7 @@ export default function AvailablePickups() {
     .pickup-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
     .filter-badge { cursor: pointer; transition: all 0.2s; }
     .filter-badge.active { background: #059669; color: white; border-color: #059669; }
-    .btn-accept { background: #059669; color: #fff; font-weight: 700; border-radius: 12px; }
+    .btn-accept { background: #00ea61; color: #000; font-weight: 700; border-radius: 12px; }
     .btn-reject { background: #fff; color: #374151; border: 1px solid #e5e7eb; font-weight: 600; border-radius: 12px; }
   `;
 
@@ -119,8 +98,8 @@ export default function AvailablePickups() {
             {/* Header Area */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">Available Pickup Opportunities</h1>
-                    <p className="mt-2 text-lg text-white/80 font-medium">Browse and manage waste collection tasks from local NGOs.</p>
+                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Available Pickup Opportunities</h1>
+                    <p className="mt-2 text-lg text-gray-500 font-medium">Browse and manage waste collection tasks from local NGOs.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 font-semibold shadow-sm text-gray-700">
@@ -128,7 +107,7 @@ export default function AvailablePickups() {
                     </button>
                     <button
                         onClick={() => setViewMode(viewMode === 'grid' ? 'map' : 'grid')}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#123524] text-white rounded-xl hover:bg-[#0d281a] font-bold shadow-md shadow-green-200"
+                        className="flex items-center gap-2 px-4 py-2 bg-green-700 text-white rounded-xl hover:bg-green-800 font-bold shadow-md shadow-green-200"
                     >
                         {viewMode === 'grid' ? <MapIcon size={18} /> : <Trash2 size={18} />}
                         {viewMode === 'grid' ? 'Map View' : 'Grid View'}
@@ -205,7 +184,7 @@ export default function AvailablePickups() {
                     </div>
                 </aside>
 
-                {/* Pickup Opportunities Content */}
+                {/* Pickup Opportunities Grid */}
                 <main className="lg:col-span-3">
                     {loading ? (
                         <div className="bg-white p-12 rounded-3xl border border-dashed border-gray-200 text-center animate-pulse">
@@ -218,14 +197,15 @@ export default function AvailablePickups() {
                             <div className="text-gray-900 font-bold text-xl">No pickups available right now</div>
                             <p className="text-gray-500 mt-2">Try adjusting your filters or check back later.</p>
                         </div>
-                    ) : viewMode === 'grid' ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {filteredPickups.map(pickup => (
                                 <div key={pickup._id} className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden pickup-card flex flex-col">
                                     {/* Card Header: NGO Info */}
                                     <div className="p-5 flex justify-between items-start">
                                         <div className="flex items-center gap-3">
                                             <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center border border-green-100 overflow-hidden">
+                                                {/* Placeholder NGO Logo */}
                                                 <TrendingUp className="text-green-600" size={24} />
                                             </div>
                                             <div>
@@ -296,7 +276,7 @@ export default function AvailablePickups() {
                                         </button>
                                         <button
                                             onClick={() => handleAccept(pickup._id)}
-                                            className="flex-[1.5] py-3 btn-accept text-white hover:shadow-lg hover:shadow-green-200 flex items-center justify-center gap-2"
+                                            className="flex-[1.5] py-3 btn-accept hover:shadow-lg hover:shadow-green-200 flex items-center justify-center gap-2"
                                         >
                                             Accept Pickup
                                         </button>
@@ -304,94 +284,10 @@ export default function AvailablePickups() {
                                 </div>
                             ))}
                         </div>
-                    ) : (
-                        <div className="bg-white rounded-[32px] border border-gray-100 shadow-xl overflow-hidden h-[600px] relative z-0">
-                            <MapContainer
-                                center={filteredPickups[0]?.location?.coordinates || { lat: 47.6, lng: -122.3 }}
-                                zoom={11}
-                                style={{ height: "100%", width: "100%" }}
-                            >
-                                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                {filteredPickups.map(p => (
-                                    <Marker key={p._id} position={p.location.coordinates || { lat: 47.6, lng: -122.3 }}>
-                                        <Popup>
-                                            <div className="p-2">
-                                                <div className="font-bold text-gray-900 mb-1">{p.wasteTypes.join(", ").toUpperCase()}</div>
-                                                <div className="text-xs text-gray-500 mb-2">{p.location.address}</div>
-                                                <button
-                                                    onClick={() => handleAccept(p._id)}
-                                                    className="w-full py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg"
-                                                >
-                                                    Accept Pickup
-                                                </button>
-                                            </div>
-                                        </Popup>
-                                    </Marker>
-                                ))}
-                            </MapContainer>
-                        </div>
                     )}
                 </main>
 
             </div>
-
-            {/* Confirmation Modal */}
-            {confirmModal.open && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-[32px] w-full max-w-sm p-8 shadow-2xl scale-in-center">
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <CheckCircle2 size={32} />
-                            </div>
-                            <h3 className="text-xl font-black text-gray-900 mb-2">Accept Pickup?</h3>
-                            <p className="text-gray-500 font-medium mb-8">{confirmModal.message}</p>
-                            <div className="flex gap-4">
-                                <button
-                                    onClick={() => setConfirmModal({ open: false, pickupId: null, message: "", onConfirm: null })}
-                                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 !text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={confirmModal.onConfirm}
-                                    disabled={actionLoading}
-                                    className="flex-1 py-3 px-4 bg-[#123524] text-white !text-white rounded-2xl font-bold hover:bg-[#0d281a] transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2"
-                                >
-                                    {actionLoading ? <Loader className="animate-spin" size={18} /> : <span className="text-white !text-white">Yes, Accept</span>}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* In-website Float Message (Toast) */}
-            {toast.show && (
-                <div className={`fixed bottom-10 right-10 z-[9999] animate-bounce-in`}>
-                    <div className={`px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border ${toast.type === 'success'
-                        ? 'bg-green-600 text-white border-green-500'
-                        : 'bg-red-600 text-white border-red-500'
-                        }`}>
-                        {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                        <span className="font-bold">{toast.message}</span>
-                    </div>
-                </div>
-            )}
-
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                @keyframes bounce-in {
-                    0% { transform: translateY(100px); opacity: 0; }
-                    60% { transform: translateY(-10px); opacity: 1; }
-                    100% { transform: translateY(0); }
-                }
-                .animate-bounce-in { animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-                .scale-in-center { animation: scale-in-center 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-                @keyframes scale-in-center {
-                    0% { transform: scale(0.9); opacity: 0; }
-                    100% { transform: scale(1); opacity: 1; }
-                }
-            `}} />
         </div>
     );
 }

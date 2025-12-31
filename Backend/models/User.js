@@ -14,14 +14,6 @@ const userSchema = new mongoose.Schema(
       index: true
     },
 
-    phoneNumber: {
-      type: String,
-      unique: true,
-      sparse: true,
-      trim: true
-    },
-    isPhoneVerified: { type: Boolean, default: false },
-
     username: {
       type: String,
       required: true,
@@ -47,13 +39,6 @@ const userSchema = new mongoose.Schema(
 
     fullName: { type: String, trim: true },
     location: { type: String, trim: true },
-    // Explicit address field matching schema requirements
-    address: { type: String, trim: true },
-    // Coordinates for map features
-    coordinates: {
-      lat: { type: Number },
-      lng: { type: Number }
-    },
     skills: { type: [String], default: [] },
     // Per-user settings persisted for cross-device preferences
     settings: {
@@ -62,7 +47,6 @@ const userSchema = new mongoose.Schema(
     },
 
     googleId: { type: String, unique: true, sparse: true },
-    googleProfilePic: { type: String },
     isGoogleUser: { type: Boolean, default: false },
     isEmailVerified: { type: Boolean, default: false }
   },

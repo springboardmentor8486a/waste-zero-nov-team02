@@ -51,7 +51,7 @@ export default function ResetPasswordPage() {
           <div className="left-block">
             <div className="brand-row">
               <img src={logoSrc} className="brand-icon" />
-              <h1 className="brand-text">WasteWise</h1>
+              <h1 className="brand-text">WasteZero</h1>
             </div>
             <h2 className="reset-title">Reset Password</h2>
             <p className="reset-subtext">
@@ -123,7 +123,7 @@ export default function ResetPasswordPage() {
           </div>
         </div>
       </div>
-      <div className="footer-bar">COPYRIGHT 2025 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
     </>
   );
 }

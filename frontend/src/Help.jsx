@@ -2,8 +2,8 @@ import PageHeader from "./components/PageHeader";
 
 export default function Help() {
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-5xl mx-auto bg-white/85 backdrop-blur-md rounded-xl shadow p-6 border border-white/40">
+    <div className="min-h-screen p-6 bg-gray-50 dark:bg-[#0f172a]">
+      <div className="max-w-5xl mx-auto bg-white dark:bg-[#111827] rounded-xl shadow p-6">
 
         <PageHeader
           title="Help & Support"

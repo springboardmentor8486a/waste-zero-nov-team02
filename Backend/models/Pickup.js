@@ -40,7 +40,7 @@ const PickupSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['scheduled', 'in_progress', 'awaiting_verification', 'completed', 'cancelled'],
+        enum: ['scheduled', 'in_progress', 'completed', 'cancelled'],
         default: 'scheduled'
     },
     volunteer: {
@@ -50,15 +50,6 @@ const PickupSchema = new mongoose.Schema({
     points_estimated: {
         type: Number,
         default: 0
-    },
-    rescheduleRequest: {
-        proposedDate: { type: String },
-        proposedTime: { type: String },
-        status: {
-            type: String,
-            enum: ['none', 'pending', 'approved', 'rejected'],
-            default: 'none'
-        }
     },
     createdAt: {
         type: Date,

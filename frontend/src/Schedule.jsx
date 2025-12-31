@@ -9,9 +9,7 @@ import {
   Info,
   Minus,
   Plus,
-  Loader,
-  CheckCircle2,
-  AlertCircle
+  Loader
 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
@@ -83,13 +81,6 @@ export default function Schedule() {
   // Location State
   const [locationName, setLocationName] = useState('123 Green Avenue');
   const [position, setPosition] = useState({ lat: 47.6062, lng: -122.3321 }); // Seattle default
-  const [view, setView] = useState("grid"); // grid or other (list)
-  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
-
-  const showToast = (message, type = "success") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: "", type: "success" }), 4000);
-  };
 
   const days = generateCalendarDays();
   const activeWaste = WASTE_TYPES.find(w => w.id === selectedWaste) || WASTE_TYPES[0];
@@ -111,115 +102,96 @@ export default function Schedule() {
       };
 
       await api.post('/pickups', payload);
-      showToast('Pickup Scheduled Successfully!');
-      setTimeout(() => navigate('/my-pickups'), 1500); // Redirect after toast
+      alert('Pickup Scheduled Successfully!');
+      navigate('/my-pickups'); // Redirect to My Pickups
     } catch (err) {
       console.error(err);
-      showToast(err.response?.data?.message || 'Failed to schedule pickup', 'error');
+      alert(err.response?.data?.message || 'Failed to schedule pickup');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen text-gray-800">
-      <header className="bg-white/90 backdrop-blur-md border border-white/40 sticky top-0 z-30 px-6 py-4 flex items-center justify-between mx-4 mt-2 rounded-2xl shadow-sm">
+<<<<<<< Updated upstream
+    <div className="min-h-screen p-6 bg-gray-50 dark:bg-[#0f172a]">
+      <div className="max-w-5xl mx-auto bg-white dark:bg-[#111827] rounded-xl shadow p-6">
+
+        <PageHeader
+          title="Schedule Pickup"
+          subtitle="Manage your upcoming pickups."
+        />
+
+        <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center">
+          <p className="text-gray-500 dark:text-gray-400">
+            No pickups scheduled.
+          </p>
+=======
+    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans">
+      <header className="bg-white border-b sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="text-xl font-bold text-[#123524] flex items-center gap-2">
+          <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
             EcoWaste Scheduler
           </div>
         </div>
+        <Link to="/dashboard" className="text-sm font-medium text-gray-500 hover:text-green-600">Back to Dashboard</Link>
       </header>
 
       <div className="max-w-7xl mx-auto p-4 md:p-8">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h1 className="text-3xl font-black text-white drop-shadow-md">Schedule Your Waste Pickup</h1>
-          <div className="flex bg-white/20 backdrop-blur p-1 rounded-xl border border-white/30">
-            <button
-              onClick={() => setView("grid")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'grid' ? 'bg-green-500 text-white shadow-md' : 'text-white hover:bg-white/10'}`}
-            >
-              Grid View
-            </button>
-            <button
-              onClick={() => setView("list")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'list' ? 'bg-green-500 text-white shadow-md' : 'text-white hover:bg-white/10'}`}
-            >
-              List View
-            </button>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Schedule Your Waste Pickup</h1>
+>>>>>>> Stashed changes
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           <div className="lg:col-span-2 space-y-8">
             {/* Step 1: Waste Type */}
-            <section className="bg-white/90 backdrop-blur-2xl p-6 md:p-8 rounded-[32px] border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-green-600 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200">1</div>
-                <h2 className="text-xl font-black text-gray-900 tracking-tight">What are we picking up?</h2>
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">1</div>
+                <h2 className="text-xl font-bold text-gray-900">What are we picking up?</h2>
               </div>
-
-              {view === "grid" ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {WASTE_TYPES.map(type => (
-                    <div
-                      key={type.id}
-                      onClick={() => setSelectedWaste(type.id)}
-                      className={`relative cursor-pointer rounded-2xl overflow-hidden border-2 transition-all duration-300 group ${selectedWaste === type.id ? 'border-green-500 ring-4 ring-green-100' : 'border-transparent hover:border-green-200 hover:shadow-lg'
-                        }`}
-                    >
-                      {selectedWaste === type.id && (
-                        <div className="absolute top-2 right-2 bg-green-600 text-white p-1 rounded-full z-10 shadow-lg"><Check size={14} strokeWidth={3} /></div>
-                      )}
-                      <div className="aspect-square bg-gray-50 relative">
-                        <img src={type.img} alt={type.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
-                        <div className="absolute bottom-3 left-3 text-white font-bold tracking-wide">{type.name}</div>
-                      </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {WASTE_TYPES.map(type => (
+                  <div
+                    key={type.id}
+                    onClick={() => setSelectedWaste(type.id)}
+                    className={`relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all ${selectedWaste === type.id ? 'border-green-500 ring-1 ring-green-500' : 'border-gray-200 hover:border-green-300'
+                      }`}
+                  >
+                    {selectedWaste === type.id && (
+                      <div className="absolute top-2 right-2 bg-green-500 text-white p-1 rounded-full z-10"><Check size={12} strokeWidth={3} /></div>
+                    )}
+                    <div className="h-32 bg-gray-100 relative">
+                      <img src={type.img} alt={type.name} className="w-full h-full object-cover" />
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {WASTE_TYPES.map(type => (
-                    <div
-                      key={type.id}
-                      onClick={() => setSelectedWaste(type.id)}
-                      className={`flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${selectedWaste === type.id ? 'border-green-500 bg-green-50/50' : 'border-gray-100 bg-white hover:border-green-200 hover:shadow-md'}`}
-                    >
-                      <div className="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
-                        <img src={type.img} alt={type.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-bold text-gray-900 text-lg">{type.name}</div>
-                        <div className="text-sm text-gray-500">{type.desc}</div>
-                      </div>
-                      {selectedWaste === type.id && <div className="bg-green-600 text-white p-2 rounded-full shadow-lg shadow-green-200"><Check size={18} strokeWidth={3} /></div>}
+                    <div className="p-3 bg-white">
+                      <div className="font-bold text-gray-900">{type.name}</div>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </section>
 
             {/* Step 2: Amount */}
-            <section className="bg-white/90 backdrop-blur-2xl p-6 md:p-8 rounded-[32px] border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-green-600 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200">2</div>
-                <h2 className="text-xl font-black text-gray-900 tracking-tight">How much waste?</h2>
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">2</div>
+                <h2 className="text-xl font-bold text-gray-900">How much waste?</h2>
               </div>
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1 flex flex-col gap-3 w-full">
-                  <label className="text-xs text-gray-500 font-bold uppercase tracking-widest">Approximate Amount</label>
-                  <div className="flex items-center gap-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                    <button onClick={() => setAmount(Math.max(1, amount - 1))} className="w-12 h-12 rounded-xl bg-white text-gray-600 flex items-center justify-center hover:bg-gray-100 shadow-sm transition-colors border border-gray-200"><Minus size={20} /></button>
-                    <span className="text-4xl font-black text-gray-900 flex-1 text-center">{amount}</span>
-                    <button onClick={() => setAmount(amount + 1)} className="w-12 h-12 rounded-xl bg-green-600 text-white flex items-center justify-center hover:bg-green-700 shadow-lg shadow-green-200 transition-colors"><Plus size={20} /></button>
+              <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col md:flex-row gap-6 items-center">
+                <div className="flex-1 flex flex-col gap-2">
+                  <label className="text-sm text-gray-500 font-medium">Approximate Amount</label>
+                  <div className="flex items-center gap-6">
+                    <button onClick={() => setAmount(Math.max(1, amount - 1))} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"><Minus size={20} /></button>
+                    <span className="text-3xl font-bold text-gray-900 w-12 text-center">{amount}</span>
+                    <button onClick={() => setAmount(amount + 1)} className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center"><Plus size={20} /></button>
                   </div>
                 </div>
-                <div className="flex-1 w-full flex flex-col gap-3">
-                  <label className="text-xs text-gray-500 font-bold uppercase tracking-widest block">Unit Type</label>
-                  <select value={unit} onChange={(e) => setUnit(e.target.value)} className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                <div className="flex-1 w-full">
+                  <label className="text-sm text-gray-500 font-medium mb-2 block">Unit Type</label>
+                  <select value={unit} onChange={(e) => setUnit(e.target.value)} className="w-full p-3 bg-gray-50 border rounded-lg">
                     <option>Kilograms (kg)</option>
                     <option>Bags (Standard Trash Bags)</option>
                     <option>Items (Count)</option>
@@ -229,51 +201,53 @@ export default function Schedule() {
             </section>
 
             {/* Step 3: Schedule */}
-            <section className="bg-white/90 backdrop-blur-2xl p-6 md:p-8 rounded-[32px] border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-green-600 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200">3</div>
-                <h2 className="text-xl font-black text-gray-900 tracking-tight">When should we come?</h2>
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">3</div>
+                <h2 className="text-xl font-bold text-gray-900">When should we come?</h2>
               </div>
-
-              <div className="flex justify-between gap-3 overflow-x-auto pb-6 mb-2 scrollbar-hide">
-                {days.map((d, i) => (
-                  <button key={i} onClick={() => setSelectedDate(d.val)} className={`p-4 rounded-2xl min-w-[70px] flex flex-col items-center justify-center transition-all duration-300 border-2 ${selectedDate === d.val ? 'bg-green-600 border-green-600 text-white shadow-lg shadow-green-200 scale-105' : 'bg-gray-50 border-transparent text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}>
-                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-80">{d.day}</span>
-                    <span className="text-2xl font-black">{d.date}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {TIME_SLOTS.map(slot => (
-                  <button key={slot} onClick={() => setSelectedTime(slot)} className={`p-4 rounded-xl border-2 text-xs font-bold transition-all duration-300 ${selectedTime === slot ? 'border-green-600 bg-green-50 text-green-700 shadow-md' : 'border-gray-100 bg-white text-gray-500 hover:border-green-200 hover:text-green-600'}`}>
-                    {slot}
-                  </button>
-                ))}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="flex justify-between gap-2 overflow-x-auto pb-4 mb-4">
+                  {days.map((d, i) => (
+                    <button key={i} onClick={() => setSelectedDate(d.val)} className={`p-3 rounded-xl min-w-[60px] flex flex-col items-center ${selectedDate === d.val ? 'bg-green-500 text-white' : 'bg-gray-50'}`}>
+                      <span className="text-xs font-medium">{d.day}</span>
+                      <span className="text-lg font-bold">{d.date}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {TIME_SLOTS.map(slot => (
+                    <button key={slot} onClick={() => setSelectedTime(slot)} className={`p-3 rounded-lg border text-xs font-bold ${selectedTime === slot ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200'}`}>
+                      {slot}
+                    </button>
+                  ))}
+                </div>
               </div>
             </section>
 
             {/* Step 4: Location (Map) */}
-            <section className="bg-white/90 backdrop-blur-2xl p-6 md:p-8 rounded-[32px] border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-green-600 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200">4</div>
-                <h2 className="text-xl font-black text-gray-900 tracking-tight">Confirm Location</h2>
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">4</div>
+                <h2 className="text-xl font-bold text-gray-900">Confirm Location</h2>
               </div>
 
-              <div className="bg-gray-50 p-2 rounded-3xl border border-gray-200">
-                <div className="px-6 py-4 flex justify-between items-center mb-2">
-                  <div>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Selected Address</p>
-                    <p className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                      <MapPin size={16} className="text-green-600" />
-                      {locationName}
-                    </p>
+              <div className="bg-white rounded-xl border border-gray-200 p-2">
+                <div className="flex gap-2 p-2 mb-2">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="text"
+                      value={locationName}
+                      onChange={(e) => setLocationName(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"
+                      placeholder="Address..."
+                    />
                   </div>
-                  <button className="text-xs font-bold text-green-600 hover:text-green-700 hover:underline">Change</button>
                 </div>
 
                 {/* LEAFLET MAP */}
-                <div className="h-64 rounded-2xl overflow-hidden relative z-0 shadow-inner">
+                <div className="h-64 rounded-lg overflow-hidden relative z-0">
                   <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
                     <TileLayer
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -282,7 +256,7 @@ export default function Schedule() {
                     <LocationMarker position={position} setPosition={setPosition} setLocationName={setLocationName} />
                   </MapContainer>
                 </div>
-                <div className="p-3 text-[10px] text-gray-400 text-center font-medium animate-pulse">Click on the map to pin-point location</div>
+                <div className="p-2 text-xs text-gray-500 text-center">Click on the map to set your pickup location.</div>
               </div>
             </section>
 
@@ -290,7 +264,7 @@ export default function Schedule() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white/85 backdrop-blur-md rounded-xl shadow-sm border border-white/40 p-6 sticky top-24">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
               <h3 className="text-lg font-bold text-gray-900 mb-6">Pickup Summary</h3>
               <div className="flex gap-4 mb-6 pb-6 border-b border-gray-100">
                 <div className="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden">
@@ -325,7 +299,7 @@ export default function Schedule() {
               <button
                 onClick={handleConfirm}
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-green-200"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2"
               >
                 {loading ? <Loader className="animate-spin" /> : 'Confirm Pickup'}
               </button>
@@ -334,29 +308,6 @@ export default function Schedule() {
 
         </div>
       </div>
-
-      {/* In-website Float Message (Toast) */}
-      {toast.show && (
-        <div className={`fixed bottom-10 right-10 z-[9999] animate-bounce-in`}>
-          <div className={`px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border ${toast.type === 'success'
-            ? 'bg-green-600 text-white border-green-500'
-            : 'bg-red-600 text-white border-red-500'
-            }`}>
-            {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-            <span className="font-bold">{toast.message}</span>
-          </div>
-        </div>
-      )}
-
-      <style dangerouslySetInnerHTML={{
-        __html: `
-                @keyframes bounce-in {
-                    0% { transform: translateY(100px); opacity: 0; }
-                    60% { transform: translateY(-10px); opacity: 1; }
-                    100% { transform: translateY(0); }
-                }
-                .animate-bounce-in { animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-            `}} />
     </div>
   );
 }

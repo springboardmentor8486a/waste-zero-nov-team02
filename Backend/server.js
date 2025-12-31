@@ -28,7 +28,7 @@ app.get("/api", (req, res) => {
   res.json({
     status: "OK",
     message: "WasteZero API",
-    version: "1.1.0",
+    version: "1.0.0",
   });
 });
 
@@ -39,6 +39,14 @@ app.get("/api/health", (req, res) => {
 // ======================
 // Routes
 // ======================
+<<<<<<< Updated upstream
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/profile", require("./routes/profile"));
+app.use("/api/opportunities", require("./routes/opportunity"));
+app.use("/api/applications", require("./routes/application"));
+app.use("/api/activity", require("./routes/activity"));
+//app.use("/api/dashboard", require("./routes/dashboard"));
+=======
 
 // Register API routes (single, clean mount points)
 app.use('/api/auth', require('./routes/auth'));
@@ -60,12 +68,12 @@ app.use('/api/assistant', require('./routes/assistant'));
 
 // Pickup scheduling
 app.use('/api/pickups', require('./routes/pickups'));
-app.use('/api/notifications', require('./routes/notifications'));
 
 // Applications and activity
 app.use('/api/applications', require('./routes/application'));
 app.use('/api/activity', require('./routes/activity'));
 
+>>>>>>> Stashed changes
 
 // ======================
 // MongoDB Connection
@@ -91,7 +99,7 @@ if (!MONGODB_URI) {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT} [v1.0.1 - Reschedule Routes Active]`);
+  console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📡 API available at http://localhost:${PORT}/api`);
 });
 
