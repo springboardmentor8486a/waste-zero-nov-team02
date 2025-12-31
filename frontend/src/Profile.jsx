@@ -432,188 +432,186 @@ const Profile = () => {
               </div>
 
             </div>
-          </div>
 
-
-        {/* Basic Information */}
-        <div className="card">
-          <div className="card-title">
-            <Globe size={20} />
-            Basic Information
-          </div>
-          <div className="form-grid">
-            <div className="form-group">
-              <label className="form-label">Organization Name</label>
-              <input
-                className="form-input"
-                value={editFields.organizationName}
-                onChange={(e) => setEditFields({ ...editFields, organizationName: e.target.value })}
-                placeholder="e.g. Green Earth Initiative"
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Website URL</label>
-              <input
-                className="form-input"
-                value={editFields.website}
-                onChange={(e) => setEditFields({ ...editFields, website: e.target.value })}
-                placeholder="https://"
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Mission Statement</label>
-            <textarea
-              className="form-textarea"
-              placeholder="Describe your organization's mission..."
-              value={editFields.missionStatement}
-              onChange={(e) => setEditFields({ ...editFields, missionStatement: e.target.value })}
-              maxLength={500}
-            ></textarea>
-            <div className="char-count">{editFields.missionStatement.length}/500 characters</div>
-          </div>
-        </div>
-
-        {/* Contact and Location */}
-        <div className="form-grid">
-          <div className="card">
-            <div className="card-title">
-              <Phone size={20} />
-              Contact Details
-            </div>
-            <div className="form-group">
-              <label className="form-label">Public Email</label>
-              <input
-                className="form-input"
-                value={editFields.publicEmail}
-                onChange={(e) => setEditFields({ ...editFields, publicEmail: e.target.value })}
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Phone Number</label>
-              <input
-                className="form-input"
-                value={editFields.phoneNumber}
-                onChange={(e) => setEditFields({ ...editFields, phoneNumber: e.target.value })}
-                placeholder="+1 (555) 000-0000"
-              />
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="card-title">
-              <MapPin size={20} />
-              Location
-            </div>
-            <div className="form-group">
-              <label className="form-label">Headquarters Address</label>
-              <input
-                className="form-input"
-                value={editFields.address}
-                onChange={(e) => setEditFields({ ...editFields, address: e.target.value })}
-                placeholder="123 Eco Friendly Way"
-              />
-            </div>
-            <div className="form-grid" style={{ marginBottom: 0, gap: '1rem' }}>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">City</label>
-                <input
-                  className="form-input"
-                  value={editFields.city}
-                  onChange={(e) => setEditFields({ ...editFields, city: e.target.value })}
-                />
+            {/* Basic Information */}
+            <div className="card">
+              <div className="card-title">
+                <Globe size={20} />
+                Basic Information
               </div>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Country</label>
-                <select
-                  className="form-input"
-                  value={editFields.country}
-                  onChange={(e) => setEditFields({ ...editFields, country: e.target.value })}
-                >
-                  <option value="United States">United States</option>
-                  <option value="Canada">Canada</option>
-                  <option value="India">India</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                </select>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label className="form-label">Organization Name</label>
+                  <input
+                    className="form-input"
+                    value={editFields.organizationName}
+                    onChange={(e) => setEditFields({ ...editFields, organizationName: e.target.value })}
+                    placeholder="e.g. Green Earth Initiative"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Website URL</label>
+                  <input
+                    className="form-input"
+                    value={editFields.website}
+                    onChange={(e) => setEditFields({ ...editFields, website: e.target.value })}
+                    placeholder="https://"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Mission Statement</label>
+                <textarea
+                  className="form-textarea"
+                  placeholder="Describe your organization's mission..."
+                  value={editFields.missionStatement}
+                  onChange={(e) => setEditFields({ ...editFields, missionStatement: e.target.value })}
+                  maxLength={500}
+                ></textarea>
+                <div className="char-count">{editFields.missionStatement.length}/500 characters</div>
               </div>
             </div>
-          </div>
-        </div>
-      </>
+
+            {/* Contact and Location */}
+            <div className="form-grid">
+              <div className="card">
+                <div className="card-title">
+                  <Phone size={20} />
+                  Contact Details
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Public Email</label>
+                  <input
+                    className="form-input"
+                    value={editFields.publicEmail}
+                    onChange={(e) => setEditFields({ ...editFields, publicEmail: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Phone Number</label>
+                  <input
+                    className="form-input"
+                    value={editFields.phoneNumber}
+                    onChange={(e) => setEditFields({ ...editFields, phoneNumber: e.target.value })}
+                    placeholder="+1 (555) 000-0000"
+                  />
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="card-title">
+                  <MapPin size={20} />
+                  Location
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Headquarters Address</label>
+                  <input
+                    className="form-input"
+                    value={editFields.address}
+                    onChange={(e) => setEditFields({ ...editFields, address: e.target.value })}
+                    placeholder="123 Eco Friendly Way"
+                  />
+                </div>
+                <div className="form-grid" style={{ marginBottom: 0, gap: '1rem' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">City</label>
+                    <input
+                      className="form-input"
+                      value={editFields.city}
+                      onChange={(e) => setEditFields({ ...editFields, city: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Country</label>
+                    <select
+                      className="form-input"
+                      value={editFields.country}
+                      onChange={(e) => setEditFields({ ...editFields, country: e.target.value })}
+                    >
+                      <option value="United States">United States</option>
+                      <option value="Canada">Canada</option>
+                      <option value="India">India</option>
+                      <option value="United Kingdom">United Kingdom</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
-      {/* VOLUNTEER VERSION (Restored Simple UI) */}
-      {!isNgo && (
-        <div className="card">
-          <div className="card-title">
-            <User size={20} />
-            Personal Information
-          </div>
-          <div className="form-grid">
-            <div className="form-group">
-              <label className="form-label">Username</label>
-              <input
-                className="form-input"
-                value={userData?.username || ""}
-                disabled
-                style={{ background: '#f3f4f6', cursor: 'not-allowed' }}
-              />
+        {/* VOLUNTEER VERSION (Restored Simple UI) */}
+        {!isNgo && (
+          <div className="card">
+            <div className="card-title">
+              <User size={20} />
+              Personal Information
+            </div>
+            <div className="form-grid">
+              <div className="form-group">
+                <label className="form-label">Username</label>
+                <input
+                  className="form-input"
+                  value={userData?.username || ""}
+                  disabled
+                  style={{ background: '#f3f4f6', cursor: 'not-allowed' }}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input
+                  className="form-input"
+                  value={userData?.email || ""}
+                  disabled
+                  style={{ background: '#f3f4f6', cursor: 'not-allowed' }}
+                />
+              </div>
+            </div>
+            <div className="form-grid">
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input
+                  className="form-input"
+                  value={editFields.fullName}
+                  onChange={(e) => setEditFields({ ...editFields, fullName: e.target.value })}
+                  placeholder="Your Name"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Location</label>
+                <input
+                  className="form-input"
+                  value={editFields.location}
+                  onChange={(e) => setEditFields({ ...editFields, location: e.target.value })}
+                  placeholder="City, Country"
+                />
+              </div>
             </div>
             <div className="form-group">
-              <label className="form-label">Email Address</label>
-              <input
-                className="form-input"
-                value={userData?.email || ""}
-                disabled
-                style={{ background: '#f3f4f6', cursor: 'not-allowed' }}
-              />
-            </div>
-          </div>
-          <div className="form-grid">
-            <div className="form-group">
-              <label className="form-label">Full Name</label>
-              <input
-                className="form-input"
-                value={editFields.fullName}
-                onChange={(e) => setEditFields({ ...editFields, fullName: e.target.value })}
-                placeholder="Your Name"
-              />
+              <label className="form-label">Bio</label>
+              <textarea
+                className="form-textarea"
+                placeholder="Tell us about yourself..."
+                value={editFields.missionStatement}
+                onChange={(e) => setEditFields({ ...editFields, missionStatement: e.target.value })}
+                maxLength={300}
+                style={{ minHeight: '100px' }}
+              ></textarea>
             </div>
             <div className="form-group">
-              <label className="form-label">Location</label>
+              <label className="form-label">Skills (comma separated)</label>
               <input
                 className="form-input"
-                value={editFields.location}
-                onChange={(e) => setEditFields({ ...editFields, location: e.target.value })}
-                placeholder="City, Country"
+                value={editFields.skills}
+                onChange={(e) => setEditFields({ ...editFields, skills: e.target.value })}
+                placeholder="e.g. Recycling, Logistics, Teaching"
               />
             </div>
           </div>
-          <div className="form-group">
-            <label className="form-label">Bio</label>
-            <textarea
-              className="form-textarea"
-              placeholder="Tell us about yourself..."
-              value={editFields.missionStatement}
-              onChange={(e) => setEditFields({ ...editFields, missionStatement: e.target.value })}
-              maxLength={300}
-              style={{ minHeight: '100px' }}
-            ></textarea>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Skills (comma separated)</label>
-            <input
-              className="form-input"
-              value={editFields.skills}
-              onChange={(e) => setEditFields({ ...editFields, skills: e.target.value })}
-              placeholder="e.g. Recycling, Logistics, Teaching"
-            />
-          </div>
-        </div>
-      )}
+        )}
 
 
-    </div>
+      </div>
 
     </div >
   );
