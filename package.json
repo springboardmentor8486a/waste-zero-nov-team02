@@ -9,7 +9,7 @@
     "install-all": "npm install && cd Backend && npm install && cd ../frontend && npm install"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "vite": "^7.3.1"
   }
 }
-
