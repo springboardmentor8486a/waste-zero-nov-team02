@@ -2,8 +2,13 @@
 node_modules/
 npm-debug.log*
 
-# Environment variables
-# .env
+# Environment variables - NEVER commit these!
+.env
+*.env
+.env.local
+.env.*.local
+Backend/.env
+Backend/*.env
 
 # OS / Editor
 .vscode/
