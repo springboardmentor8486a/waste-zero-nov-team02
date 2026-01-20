@@ -1,0 +1,192 @@
+/* Landing Page Specific Styles */
+
+/* Ensure smooth scrolling */
+html {
+    scroll-behavior: smooth;
+    font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+/* Better text readability with shadows */
+.text-shadow-strong {
+    text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.text-shadow-medium {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.text-shadow-light {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Glassmorphism effects */
+.glass-navbar {
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+/* Hero section enhancements */
+.hero-gradient {
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(18, 53, 36, 0.7) 100%);
+}
+
+/* Button hover effects */
+.btn-primary-landing {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary-landing::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary-landing:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Scroll indicator animation */
+@keyframes scroll-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(10px);
+    }
+}
+
+.scroll-indicator {
+    animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+/* Fade in animations */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slide-in-left 1s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slide-in-right 1s ease-out;
+}
+
+/* Glow effect for truck image */
+.truck-glow {
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+    transition: filter 0.5s ease;
+}
+
+.truck-glow:hover {
+    filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.5));
+}
+
+/* Footer link hover effects */
+.footer-link {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease;
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+/* Social icon pulse effect */
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+}
+
+.social-icon:hover {
+    animation: pulse-glow 1.5s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-description {
+        font-size: 0.9rem;
+    }
+}

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "./utils/api";
+import { Eye, EyeOff } from "lucide-react";
 import "./App.css";
 
-const logoSrc =
-  "/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png";
+const logoSrc = "/waste-truck.png";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -23,7 +23,15 @@ export default function RegisterPage() {
   // Google Identity Services (register)
   useEffect(() => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId) return;
+    const googleSignInEl = document.getElementById("googleSignIn");
+
+    if (!clientId) {
+      console.warn('Google Client ID not found. Google sign-in will not be available.');
+      if (googleSignInEl) {
+        googleSignInEl.innerHTML = '<p style="color: #999; font-size: 12px; padding: 8px;">Google sign-in not configured</p>';
+      }
+      return;
+    }
 
     const onLoad = () => {
       if (window.google && window.google.accounts && window.google.accounts.id) {
@@ -31,38 +39,82 @@ export default function RegisterPage() {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: async (resp) => {
+              try {
+                console.debug('Google credential received (register)', resp);
+                const tokenId = resp.credential;
+                // attempt quick client-side decode to show detected role
                 try {
-                  console.debug('Google credential received (register)', resp);
-                  const tokenId = resp.credential;
-                  const res = await api.post('/auth/google', { tokenId });
-                  console.debug('Backend /auth/google response (register)', res?.data);
-
-                  if (res?.data?.success) {
-                    localStorage.setItem('token', res.data.token);
-                    localStorage.setItem('name', res.data.user.fullName || res.data.user.username);
-                    localStorage.setItem('role', res.data.user.role);
-                    navigate('/dashboard');
-                    return;
+                  const parts = tokenId.split('.');
+                  if (parts.length >= 2) {
+                    const payloadJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+                    const payload = JSON.parse(payloadJson);
+                    const gEmail = payload?.email || '';
+                    const domain = String(gEmail).split('@')[1] || '';
+                    const derivedRole = /gmail/i.test(domain) ? 'volunteer' : 'ngo';
+                    setGoogleRole(derivedRole);
                   }
-
-                  if (res?.data?.token) {
-                    console.warn('No success flag but token returned (register) — using fallback redirect');
-                    localStorage.setItem('token', res.data.token);
-                    localStorage.setItem('name', res.data.user?.fullName || res.data.user?.username || 'User');
-                    localStorage.setItem('role', res.data.user?.role || 'volunteer');
-                    navigate('/dashboard');
-                    return;
-                  }
-                } catch (err) {
-                  console.error('Google register failed', err);
+                } catch (e) {
+                  console.debug('Failed to decode Google token payload', e);
                 }
+
+                const res = await api.post('/auth/google', { tokenId });
+                console.debug('Backend /auth/google response (register)', res?.data);
+
+                if (res?.data?.success) {
+                  localStorage.setItem('token', res.data.token);
+                  localStorage.setItem('name', res.data.user.fullName || res.data.user.username);
+                  localStorage.setItem('role', res.data.user.role);
+                  navigate('/dashboard');
+                  return;
+                }
+
+                if (res?.data?.token) {
+                  console.warn('No success flag but token returned (register) — using fallback redirect');
+                  localStorage.setItem('token', res.data.token);
+                  localStorage.setItem('name', res.data.user?.fullName || res.data.user?.username || 'User');
+                  localStorage.setItem('role', res.data.user?.role || googleRole || 'volunteer');
+                  navigate('/dashboard');
+                  return;
+                }
+              } catch (err) {
+                console.error('Google register failed', err);
               }
+            }
           });
 
           const el = document.getElementById('googleSignInRegister');
-          if (el) window.google.accounts.id.renderButton(el, { theme: 'outline', size: 'large' });
+          const el1 = document.getElementById("googleSignIn");
+
+          if (el1) {
+            el1.innerHTML = ""; // 🔴 IMPORTANT: clears cached button
+
+            try {
+              window.google.accounts.id.renderButton(el1, {
+                theme: "filled_white",   // ✅ white bg + black text
+                size: "large",
+                shape: "pill",
+                text: "signup_with",
+                width: 350
+              });
+              console.log('✅ Google sign-in button rendered (register)');
+            } catch (renderErr) {
+              console.error('Error rendering Google button:', renderErr);
+              el1.innerHTML = '<p style="color: #999; font-size: 12px; padding: 8px;">Failed to load Google sign-in</p>';
+            }
+          } else {
+            console.warn('Google sign-in element not found (register)');
+          }
+
         } catch (e) {
           console.error('Google init error', e);
+          if (googleSignInEl) {
+            googleSignInEl.innerHTML = '<p style="color: #999; font-size: 12px; padding: 8px;">Failed to initialize Google sign-in</p>';
+          }
+        }
+      } else {
+        console.warn('Google Identity Services not loaded');
+        if (googleSignInEl) {
+          googleSignInEl.innerHTML = '<p style="color: #999; font-size: 12px; padding: 8px;">Loading Google sign-in...</p>';
         }
       }
     };
@@ -75,9 +127,16 @@ export default function RegisterPage() {
       s.async = true;
       s.defer = true;
       s.onload = onLoad;
+      s.onerror = () => {
+        console.error('Failed to load Google Identity Services script');
+        if (googleSignInEl) {
+          googleSignInEl.innerHTML = '<p style="color: #999; font-size: 12px; padding: 8px;">Failed to load Google sign-in</p>';
+        }
+      };
       document.head.appendChild(s);
     } else {
-      onLoad();
+      // Script already loaded, try to render immediately
+      setTimeout(onLoad, 100);
     }
   }, [navigate]);
 
@@ -90,9 +149,16 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("");
 
+  useEffect(() => {
+    // auto-detect role based on email domain
+    const domain = String(email).split('@')[1] || '';
+    const derivedRole = /gmail/i.test(domain) ? 'volunteer' : (domain ? 'ngo' : '');
+    setRole(derivedRole);
+  }, [email]);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleRole, setGoogleRole] = useState("");
 
   useEffect(() => {
     if (successMsg || errorMsg) {
@@ -110,7 +176,7 @@ export default function RegisterPage() {
     setSuccessMsg("");
     setLoading(true);
 
-    if (!email || !username || !password || !confirmPassword || !role) {
+    if (!email || !username || !password || !confirmPassword) {
       setErrorMsg("✗ Please fill in all fields");
       setLoading(false);
       return;
@@ -129,12 +195,17 @@ export default function RegisterPage() {
     }
 
     try {
+      // derive role from email domain on client-side as well (server enforces too)
+      const domain = String(email).split('@')[1] || '';
+      const derivedRole = /gmail/i.test(domain) ? 'volunteer' : 'ngo';
+      const finalRole = role || derivedRole;
+
       const response = await api.post("/auth/register", {
         email,
         username,
         password,
         confirmPassword,
-        role,
+        role: finalRole,
       });
 
       if (response.data.success) {
@@ -165,18 +236,15 @@ export default function RegisterPage() {
           <div className="left-section">
             <div className="brand-header">
               <img src={logoSrc} className="brand-icon" />
-              <h1 className="brand-name">WasteWise</h1>
+              <h1 className="brand-name">WasteZero</h1>
             </div>
             <h2 className="headline">Let's Build a Cleaner Tomorrow</h2>
-            <p className="subtext">
-              Provide a few details to get started with smarter, eco-friendly
-              waste management.
-            </p>
           </div>
 
           {/* RIGHT */}
           <div className="right-section">
             <div className="register-card">
+
               <form className="form-wrapper" onSubmit={handleSubmit}>
                 <div className="input-group">
                   <label className="input-label">
@@ -220,9 +288,23 @@ export default function RegisterPage() {
                       className="show-pass-btn"
                       onClick={() => setShowPass1(!showPass1)}
                     >
-                      {showPass1 ? "Hide" : "Show"}
+                      {showPass1 ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
+                  {password && (
+                    <div className={`password-strength-text strength-${password.length < 6 ? 'weak' :
+                      (password.match(/[a-z]/) && password.match(/[A-Z]/) && password.match(/[0-9]/) && password.match(/[^a-zA-Z0-9]/) && password.length >= 8) ? 'strong' :
+                        (password.length >= 8 && ((password.match(/[a-z]/) && password.match(/[0-9]/)) || (password.match(/[a-zA-Z]/) && password.match(/[^a-zA-Z0-9]/)))) ? 'medium' :
+                          'weak'
+                      }`}>
+                      Strength: {
+                        password.length < 6 ? 'Too Weak (min 6 chars)' :
+                          (password.match(/[a-z]/) && password.match(/[A-Z]/) && password.match(/[0-9]/) && password.match(/[^a-zA-Z0-9]/) && password.length >= 8) ? 'Strong' :
+                            (password.length >= 8 && ((password.match(/[a-z]/) && password.match(/[0-9]/)) || (password.match(/[a-zA-Z]/) && password.match(/[^a-zA-Z0-9]/)))) ? 'Medium' :
+                              'Weak'
+                      }
+                    </div>
+                  )}
                 </div>
 
                 <div className="input-group">
@@ -242,33 +324,19 @@ export default function RegisterPage() {
                       className="show-pass-btn"
                       onClick={() => setShowPass2(!showPass2)}
                     >
-                      {showPass2 ? "Hide" : "Show"}
+                      {showPass2 ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
 
-                <div className="input-group">
-                  <label className="input-label">
-                    Role <span className="required">*</span>
-                  </label>
-                  <select
-                    className="input-field select-field"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  >
-                    <option value="">Select Your Role</option>
-                    <option value="volunteer">Volunteer</option>
-                    <option value="ngo">NGO</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
+
 
                 <button type="submit" className="register-btn" disabled={loading}>
                   {loading ? "Registering..." : "Register"}
                 </button>
 
-                <div style={{ textAlign: 'center', marginTop: 12 }}>
-                  <div id="googleSignInRegister" />
+                <div style={{ textAlign: 'center', marginTop: 12, minHeight: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  <div id="googleSignIn" style={{ width: '100%', display: 'flex', justifyContent: 'center' }} />
                 </div>
 
                 <p className="bottom-text">
@@ -285,8 +353,8 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-      </div>
-      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+    </div>
+      <div className="footer-bar">COPYRIGHT 2026 WASTEZERO.IN ALL RIGHTS RESERVED</div>
     </>
   );
 }

@@ -5,11 +5,22 @@ const adminLogSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-
-  user_id: {
+  performedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  targetUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
-  }
+  },
+  details: {
+    type: String
+  },
+  reason: {
+    type: String
+  },
+  ip: String
 }, { timestamps: true });
 
 module.exports = mongoose.model("AdminLog", adminLogSchema);

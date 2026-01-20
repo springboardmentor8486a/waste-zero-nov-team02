@@ -1,29 +1,24 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-export default function PageHeader({ title, subtitle }) {
+export default function PageHeader({ title, subtitle, textColor, size }) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center justify-between mb-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{title}</h1>
+    <div className="flex items-center justify-between mb-12 relative z-[60]">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+      >
+        <h1 className={`${size || 'text-3xl'} font-normal ${textColor || 'text-black'} tracking-tight drop-shadow-sm`}>
+          {title}
+        </h1>
         {subtitle && (
-          <p className="text-sm text-gray-600">
+          <p className={`${textColor ? textColor + '/80' : 'text-gray-600'} mt-2 font-normal text-lg`}>
             {subtitle}
           </p>
         )}
-      </div>
-
-      <button
-        onClick={() => navigate("/dashboard")}
-        className="px-4 py-2 rounded-lg text-sm font-medium
-                   bg-gray-100
-                   text-gray-800
-                   hover:bg-gray-200
-                   transition"
-      >
-        ← Back to Dashboard
-      </button>
+      </motion.div>
     </div>
   );
 }

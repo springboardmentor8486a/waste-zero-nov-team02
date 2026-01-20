@@ -1,3 +1,4 @@
+@import 'leaflet/dist/leaflet.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,13 +14,16 @@ input {
   width: 100% !important;
   box-sizing: border-box;
 }
-html, body, #root {
+
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  font-family: 'Cause', sans-serif;
+  font-family: 'Graphik', 'Inter', sans-serif;
   color: white;
 }
 
@@ -43,6 +47,8 @@ body {
 }
 
 /* Default text color to white, but allow inputs to override */
-input, textarea, select {
+input,
+textarea,
+select {
   color: inherit;
 }

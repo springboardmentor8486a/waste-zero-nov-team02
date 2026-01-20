@@ -2,14 +2,40 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
 
-const logoSrc = "/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png";
+const logoSrc = "/waste-truck.png";
 
 export default function ForgotPage() {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [email, setEmail] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/otp");
+    if (!email) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("resetEmail", email);
+        navigate("/otp");
+      } else {
+        setError(data.message || "Failed to send OTP");
+      }
+    } catch (err) {
+      setError("Network error. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -19,7 +45,7 @@ export default function ForgotPage() {
           <div className="left-section">
             <div className="brand-header">
               <img src={logoSrc} alt="logo" className="brand-icon" />
-              <h1 className="brand-name">WasteWise</h1>
+              <h1 className="brand-name">WasteZero</h1>
             </div>
 
             <div className="text-content">
@@ -41,12 +67,15 @@ export default function ForgotPage() {
                     type="email"
                     className="input-field"
                     placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
+                {error && <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{error}</p>}
 
-                <button type="submit" className="login-btn">
-                  Next
+                <button type="submit" className="login-btn" disabled={loading}>
+                  {loading ? "Sending..." : "Next"}
                 </button>
 
                 <p className="back-link">
@@ -80,7 +109,7 @@ export default function ForgotPage() {
           </div>
         </div>
       </div>
-      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+      <div className="footer-bar">COPYRIGHT 2026 WASTEZERO.IN ALL RIGHTS RESERVED</div>
     </div>
   );
 }

@@ -1,83 +1,217 @@
 :root {
-  --green: #065f46;
-  --link: #3b82f6;
-  --card-bg: rgba(255, 255, 255, 0.65);
-  font-family: 'Cause', sans-serif;
+  --green: #123524;
+  --green-glow: rgba(18, 53, 36, 0.15);
+  --emerald-gradient: linear-gradient(135deg, #123524 0%, #0e261a 100%);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(18, 53, 36, 0.1);
+  --rich-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+  --link: #123524;
+  font-family: 'Graphik', 'Inter', sans-serif;
   color: #111827;
   background-color: #ffffff;
 }
 
-* { box-sizing: border-box; }
-html, body, #root { height: 100%; margin: 0; padding: 0; color: inherit; background-color: inherit; }
-a { color: var(--link); text-decoration: none; }
+* {
+  box-sizing: border-box;
+  font-weight: 400 !important;
+}
 
-.auth-dark { background: #0b1220; color: #e5e7eb; min-height: 100vh; }
-.auth-light { background: transparent; color: #111827; min-height: 100vh; }
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  background-color: inherit;
+}
 
-.auth-dark .brand-name, .auth-dark .headline, .auth-dark .subtext, .auth-dark .input-label, .auth-dark .bottom-text, .auth-dark .register-link { color: white; }
-.auth-light .brand-name { color: #111827; }
-.auth-light .headline { color: #111827; }
-.auth-light .subtext { color: #6b7280; }
-.auth-light .input-label { color: #111827; }
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.auth-dark {
+  background: #0b1220;
+  color: #e5e7eb;
+  min-height: 100vh;
+}
+
+.auth-light {
+  background: transparent;
+  color: #111827;
+  min-height: 100vh;
+}
+
+.auth-dark .brand-name,
+.auth-dark .headline,
+.auth-dark .subtext,
+.auth-dark .input-label,
+.auth-dark .bottom-text,
+.auth-dark .register-link {
+  color: white;
+}
+
+/* Removed .auth-light overrides - all text over background image should be white for readability */
 
 .main-wrapper {
   min-height: 100vh;
   width: 100%;
-  background-image: url("C:\Users\Sruthi\waste-zero-nov-team02\frontend\public\image.png");
+  background-image: url("/image.png");
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 4rem 2rem;
 }
 
 .content-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1100px;
   display: flex;
-  gap: 4rem;
+  flex-direction: column;
+  gap: 3rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
-.left-section { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
-.brand-header { display: flex; align-items: center; gap: 1rem; }
-.brand-icon { width: 80px; height: 72px; object-fit: contain; }
-.brand-name { font-size: 3rem; font-weight: 700; color: white; }
-.headline { font-size: 2.5rem; font-weight: 700; color: white; margin: 0; }
-.subtext { font-size: 1.05rem; color: white; opacity: 0.95; margin: 0; }
+@media (min-width: 1024px) {
+  .content-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6rem;
+  }
 
-.right-section { flex: 0 0 420px; display: flex; justify-content: center; }
-.login-card, .register-card, .reset-card {
+  .left-section {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 450px;
+  }
+
+  .brand-header {
+    align-items: flex-start;
+  }
+}
+
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.2rem;
+}
+
+.brand-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.brand-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.brand-name {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: white;
+}
+
+.headline {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.subtext {
+  font-size: 0.95rem;
+  color: white;
+  opacity: 0.95;
+  margin: 0;
+}
+
+.right-section {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card,
+.register-card,
+.reset-card {
   width: 100%;
   max-width: 420px;
   padding: 2.2rem;
   border-radius: 24px;
   background: var(--card-bg);
   backdrop-filter: blur(18px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.16);
-  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.form-wrapper { display: flex; flex-direction: column; gap: 1.2rem; }
-.input-group { display: flex; flex-direction: column; gap: .4rem; }
-.input-label { font-size: .9rem; font-weight: 600; color: white; }
-.required, .required-mark { color: #ef4444; }
-.password-wrapper { position: relative; }
-.input-field, .select-field {
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.input-label {
+  font-size: .9rem;
+  font-weight: 600;
+  color: white;
+}
+
+.required,
+.required-mark {
+  color: #ef4444;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.input-field,
+.select-field {
   width: 100%;
   padding: .85rem 1rem;
   border-radius: 50px;
   border: 1.5px solid #d1d5db;
   font-size: .95rem;
   color: #111827;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   outline: none;
   transition: .2s;
 }
-.input-field:focus, .select-field:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(6,95,70,0.14); }
-.select-field { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #666 50%), linear-gradient(135deg, #666 50%, transparent 50%); background-position: calc(100% - 20px) calc(50% - 3px), calc(100% - 15px) calc(50% - 3px); background-repeat: no-repeat; background-size: 7px 7px; cursor: pointer; }
+
+.input-field:focus,
+.select-field:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.14);
+}
+
+.select-field {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #666 50%), linear-gradient(135deg, #666 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(50% - 3px), calc(100% - 15px) calc(50% - 3px);
+  background-repeat: no-repeat;
+  background-size: 7px 7px;
+  cursor: pointer;
+}
 
 .show-password-btn {
   position: absolute;
@@ -91,7 +225,33 @@ a { color: var(--link); text-decoration: none; }
   font-weight: 600;
 }
 
-.login-btn, .register-btn, .reset-btn, .verify-btn {
+.password-strength-text {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  transition: color 0.3s;
+}
+
+.strength-weak {
+  color: #ef4444;
+  /* Red */
+}
+
+.strength-medium {
+  color: #f59e0b;
+  /* Orange */
+}
+
+.strength-strong {
+  color: #10b981;
+  /* Green */
+}
+
+.login-btn,
+.register-btn,
+.reset-btn,
+.verify-btn {
   width: 100%;
   padding: .95rem;
   border: none;
@@ -102,17 +262,57 @@ a { color: var(--link); text-decoration: none; }
   background: var(--green);
   cursor: pointer;
   transition: .2s;
-  box-shadow: 0 6px 18px rgba(6,95,70,.24);
+  box-shadow: 0 6px 18px rgba(18, 53, 36, .24);
 }
-.login-btn:hover, .register-btn:hover, .reset-btn:hover, .verify-btn:hover { background: #054d38; transform: translateY(-1px); }
 
-.back-link, .register-text, .bottom-text { text-align: center; font-size: .9rem; color: white; }
-.register-link, .bottom-link { color: var(--link); font-weight: 600; cursor: pointer; }
+.login-btn:hover,
+.register-btn:hover,
+.reset-btn:hover,
+.verify-btn:hover {
+  background: #0d281a;
+  transform: translateY(-1px);
+}
 
-.toast-wrapper { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
-.toast { padding: 12px 20px; border-radius: 12px; color: white; font-weight: 600; box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
-.toast.success { background: #065f46; }
-.toast.error { background: #d0342c; }
+.back-link,
+.register-text,
+.bottom-text {
+  text-align: center;
+  font-size: .9rem;
+  color: white;
+}
+
+.register-link,
+.bottom-link {
+  color: white !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toast-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.toast.success {
+  background: #065f46;
+}
+
+.toast.error {
+  background: #d0342c;
+}
 
 .footer-bar {
   width: 100%;
@@ -123,21 +323,894 @@ a { color: var(--link); text-decoration: none; }
   font-size: 12px;
 }
 
+/* Glass & Premium Utilities */
+.premium-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--rich-shadow);
+}
+
+.rich-gradient-text {
+  background: var(--emerald-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 25px var(--green-glow);
+}
+
+.smooth-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 @media (max-width: 1024px) {
-  .content-container { flex-direction: column; text-align: center; gap: 2rem; }
-  .right-section { width: 100%; justify-content: center; }
+  .content-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .right-section {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 768px) {
-  .main-wrapper { padding: 1.2rem; }
-  .brand-name { font-size: 2.6rem; }
-  .headline { font-size: 2rem; }
-  .login-card, .register-card, .reset-card { max-width: 360px; padding: 2rem; }
+  .main-wrapper {
+    padding: 1.2rem;
+  }
+
+  .brand-name {
+    font-size: 2.6rem;
+  }
+
+  .headline {
+    font-size: 2rem;
+  }
+
+  .login-card,
+  .register-card,
+  .reset-card {
+    max-width: 360px;
+    padding: 2rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .brand-name { font-size: 2.2rem; }
-  .headline { font-size: 1.7rem; }
-  .login-card, .register-card, .reset-card { max-width: 300px; padding: 1.4rem; }
+  .brand-name {
+    font-size: 2.2rem;
+  }
+
+  .headline {
+    font-size: 1.7rem;
+  }
+
+  .login-card,
+  .register-card,
+  .reset-card {
+    max-width: 300px;
+    padding: 1.4rem;
+  }
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+/* Make inner text of common "card" containers dark green for better branding */
+/* Targets Tailwind-like utility classes that include 'bg-white' and common component classes */
+div[class*="bg-white"],
+div[class*="bg-white/"],
+.profile-card,
+.field-card,
+.card,
+.login-card,
+.register-card,
+.reset-card {
+  color: #123524;
+}
+
+
+
+/* Primary button styling (brand dark green) */
+button.primary,
+button.btn,
+.btn-primary,
+.btn.primary,
+.btn-save,
+.btn-upload,
+.btn-accept,
+.login-btn,
+.register-btn {
+  background-color: #123524;
+  color: white;
+}
+
+/* Standardized Loading Spinner */
+.loading-spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.spinner-wrapper {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+}
+
+.spinner-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 4px solid #d1fae5;
+  /* border-emerald-100 */
+}
+
+.spinner-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 4px solid transparent;
+  border-top-color: #059669;
+  /* border-t-emerald-600 */
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.reset-btn,
+.verify-btn,
+.fp-add,
+.fp-signout,
+.btn {
+  background: var(--green) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+button.primary:hover,
+.btn-primary:hover,
+.btn.primary:hover,
+.btn-save:hover,
+.login-btn:hover,
+.register-btn:hover,
+.reset-btn:hover,
+.verify-btn:hover,
+.fp-add:hover,
+.fp-signout:hover,
+.btn:hover {
+  background: #0d281a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button.primary:active,
+.btn-primary:active,
+.btn.primary:active,
+.btn-save:active,
+.login-btn:active,
+.register-btn:active,
+.reset-btn:active,
+.verify-btn:active,
+.fp-add:active,
+.fp-signout:active,
+.btn:active {
+  transform: scale(0.96);
+  box-shadow: none;
+}
+
+/* Keep ghost/outline buttons readable by not forcing color when they explicitly use bg-white or other bg classes */
+button[class*="bg-white"],
+.btn.ghost,
+.btn-cancel {
+  background: white !important;
+  color: #374151 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Dark green buttons - ensure white text for all states and all content inside */
+button.bg-\[#123524\] *,
+button[style*="background-color: #123524"] *,
+button[style*="background-color:#123524"] * {
+  color: #ffffff !important;
+}
+
+button.bg-\[#123524\]:hover *,
+button[style*="background-color: #123524"]:hover *,
+button[style*="background-color:#123524"]:hover * {
+  color: #ffffff !important;
+}
+
+button.bg-\[#123524\]:active *,
+button[style*="background-color: #123524"]:active *,
+button[style*="background-color:#123524"]:active * {
+  color: #ffffff !important;
+}
+
+button.bg-\[#123524\]:disabled *,
+button[style*="background-color: #123524"]:disabled *,
+button[style*="background-color:#123524"]:disabled * {
+  color: #ffffff !important;
+}
+
+/* All green buttons - ensure white text for all states and all content inside */
+button[class*="bg-green"] *,
+button[class*="bg-waste-green"] *,
+button[style*="background-color: #059669"] *,
+button[style*="background-color:#059669"] *,
+button[style*="background-color: #10b981"] *,
+button[style*="background-color:#10b981"] *,
+button[style*="background-color: #00a32a"] *,
+button[style*="background-color:#00a32a"] *,
+button[style*="background-color: #065f46"] *,
+button[style*="background-color:#065f46"] * {
+  color: #ffffff !important;
+}
+
+button[class*="bg-green"]:hover *,
+button[class*="bg-waste-green"]:hover *,
+button[style*="background-color: #059669"]:hover *,
+button[style*="background-color:#059669"]:hover *,
+button[style*="background-color: #10b981"]:hover *,
+button[style*="background-color:#10b981"]:hover *,
+button[style*="background-color: #00a32a"]:hover *,
+button[style*="background-color:#00a32a"]:hover *,
+button[style*="background-color: #065f46"]:hover *,
+button[style*="background-color:#065f46"]:hover * {
+  color: #ffffff !important;
+}
+
+button[class*="bg-green"]:active *,
+button[class*="bg-waste-green"]:active *,
+button[style*="background-color: #059669"]:active *,
+button[style*="background-color:#059669"]:active *,
+button[style*="background-color: #10b981"]:active *,
+button[style*="background-color:#10b981"]:active *,
+button[style*="background-color: #00a32a"]:active *,
+button[style*="background-color:#00a32a"]:active *,
+button[style*="background-color: #065f46"]:active *,
+button[style*="background-color:#065f46"]:active * {
+  color: #ffffff !important;
+}
+
+button[class*="bg-green"]:disabled *,
+button[class*="bg-waste-green"]:disabled *,
+button[style*="background-color: #059669"]:disabled *,
+button[style*="background-color:#059669"]:disabled *,
+button[style*="background-color: #10b981"]:disabled *,
+button[style*="background-color:#10b981"]:disabled *,
+button[style*="background-color: #00a32a"]:disabled *,
+button[style*="background-color:#00a32a"]:disabled *,
+button[style*="background-color: #065f46"]:disabled *,
+button[style*="background-color:#065f46"]:disabled * {
+  color: #ffffff !important;
+}
+
+.auth-dark {
+  color: #ffffff;
+}
+
+/* Headings & paragraphs */
+.auth-dark h1,
+.auth-dark h2,
+.auth-dark h3,
+.auth-dark h4,
+.auth-dark p,
+.auth-dark span,
+.auth-dark label,
+.auth-dark a {
+  color: #ffffff !important;
+}
+
+/* Input labels */
+.auth-dark .input-label {
+  color: #ffffff !important;
+}
+
+/* Input typed text */
+.auth-dark .input-field {
+  color: #000000 !important;
+}
+
+/* Input placeholder text */
+.auth-dark .input-field::placeholder {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Checkbox + helper text */
+.auth-dark input[type="checkbox"]+span,
+.auth-dark .register-link,
+.auth-dark .bottom-text {
+  color: #ffffff !important;
+}
+
+/* Buttons text */
+.auth-dark button {
+  color: #000000 !important;
+}
+
+/* Footer */
+.auth-dark .footer-bar {
+  color: #ffffff !important;
+}
+
+/* =====================================
+   ALL AUTH PAGES – FINAL COLOR FIX
+   ===================================== */
+
+/* Primary action buttons text (Login / Register / Reset) */
+.auth-dark .login-btn,
+.auth-dark .register-btn,
+.auth-dark .reset-btn,
+.auth-dark .verify-btn {
+  color: #ffffff !important;
+}
+
+/* Google Sign-In button text should stay black */
+.auth-dark #googleSignIn button,
+.auth-dark #googleSignIn div,
+.auth-dark #googleSignIn span {
+  color: #000000 !important;
+}
+
+/* ================================
+   OTP PAGE – LABEL COLOR FIX
+   ================================ */
+
+/* Make "Enter OTP" label white */
+.auth-light .login-card .input-label {
+  color: #ffffff !important;
+}
+
+/* ===============================
+   MESSAGES PAGE – TEXT COLOR FIX
+   =============================== */
+
+/* Message panel text to black */
+.message-panel,
+.message-panel h1,
+.message-panel h2,
+.message-panel p,
+.message-panel span {
+  color: #000000 !important;
+}
+
+/* ===============================
+   DARK MODE STYLES
+   =============================== */
+
+/* Dark mode root variables */
+.dark {
+  --green: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.2);
+  --emerald-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --glass-bg: rgba(17, 24, 39, 0.85);
+  --glass-border: rgba(16, 185, 129, 0.1);
+  --rich-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+  --link: #10b981;
+  color: #d1d5db;
+  background-color: #0f172a;
+}
+
+/* Dark mode body and root */
+.dark body,
+.dark #root {
+  background-color: #0f172a;
+  color: #d1d5db;
+}
+
+/* Dark mode text colors - softer than pure white */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark p,
+.dark span,
+.dark div,
+.dark label {
+  color: #d1d5db;
+}
+
+/* Dark mode cards and containers - darker backgrounds */
+.dark div[class*="bg-white"],
+.dark div[class*="bg-gray-50"],
+.dark .premium-card,
+.dark .profile-card,
+.dark .field-card,
+.dark .card {
+  background-color: #1e293b !important;
+  color: #d1d5db !important;
+  border-color: #334155 !important;
+}
+
+/* Dark mode specific text in cards */
+.dark div[class*="bg-white"] *,
+.dark div[class*="bg-gray-50"] *,
+.dark .premium-card *,
+.dark .profile-card *,
+.dark .field-card *,
+.dark .card * {
+  color: #d1d5db !important;
+}
+
+/* Dark mode inputs - softer backgrounds */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="date"],
+.dark input[type="time"],
+.dark textarea,
+.dark select,
+.dark .input-field,
+.dark .select-field {
+  background-color: #334155 !important;
+  color: #e2e8f0 !important;
+  border-color: #475569 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Dark mode borders */
+.dark div[class*="border-gray"],
+.dark [class*="border-gray"] {
+  border-color: #334155 !important;
+}
+
+/* Dark mode text colors for specific elements - softer tones */
+.dark .text-gray-900 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-500 {
+  color: #64748b !important;
+}
+
+.dark .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* Dark mode backgrounds - darker, less harsh */
+.dark .bg-gray-50 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #334155 !important;
+}
+
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+/* Dark mode buttons - keep green buttons visible */
+.dark button[class*="bg-[#123524]"],
+.dark button[class*="bg-emerald"],
+.dark button[class*="bg-green"] {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.dark button[class*="bg-[#123524]"]:hover,
+.dark button[class*="bg-emerald"]:hover,
+.dark button[class*="bg-green"]:hover {
+  background-color: #059669 !important;
+}
+
+/* Dark mode links */
+.dark a {
+  color: #10b981;
+}
+
+.dark a:hover {
+  color: #34d399;
+}
+
+/* Dark mode shadows - softer */
+.dark [class*="shadow"] {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dark mode specific components */
+.dark .toast {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+/* Dark mode table */
+.dark table {
+  background-color: #1e293b;
+  color: #d1d5db;
+}
+
+.dark th {
+  background-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.dark td {
+  border-color: #334155 !important;
+  color: #d1d5db !important;
+}
+
+/* Dark mode hover states - subtle gray instead of bright white */
+.dark tr:hover {
+  background-color: #334155 !important;
+}
+
+.dark button:hover:not([class*="bg-[#123524]"]):not([class*="bg-emerald"]):not([class*="bg-green"]) {
+  background-color: #334155 !important;
+}
+
+/* Sidebar hover states - softer highlight */
+.dark nav a:hover,
+.dark nav button:hover,
+.dark [class*="sidebar"] a:hover,
+.dark [class*="sidebar"] button:hover {
+  background-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Ensure visibility for important text - softer white */
+.dark .font-bold,
+.dark .font-semibold,
+.dark .font-medium {
+  color: #e2e8f0 !important;
+}
+
+/* Dark mode - reduce brightness of any remaining white elements */
+.dark [class*="text-white"] {
+  color: #e2e8f0 !important;
+}
+
+.dark [class*="bg-white"]:not(input):not(textarea):not(select) {
+  background-color: #1e293b !important;
+}
+
+/* Dark mode - fix overly bright hover states */
+.dark *:hover {
+  transition: all 0.2s ease;
+}
+
+/* ===============================
+   DARK MODE UI IMPROVEMENTS
+   =============================== */
+
+/* Improve icon visibility - softer white for icons */
+.dark svg,
+.dark [class*="lucide"],
+.dark i {
+  color: #94a3b8 !important;
+  opacity: 0.9;
+}
+
+/* Icons on hover - slightly brighter but not pure white */
+.dark svg:hover,
+.dark [class*="lucide"]:hover,
+.dark i:hover {
+  color: #cbd5e1 !important;
+  opacity: 1;
+}
+
+/* Active/selected icons - use green accent */
+.dark [class*="active"] svg,
+.dark [class*="selected"] svg,
+.dark .active svg,
+.dark .selected svg {
+  color: #10b981 !important;
+}
+
+/* Improve heading visibility with better contrast */
+.dark h1 {
+  color: #f1f5f9 !important;
+  font-weight: 600 !important;
+}
+
+.dark h2 {
+  color: #e2e8f0 !important;
+  font-weight: 600 !important;
+}
+
+.dark h3,
+.dark h4 {
+  color: #cbd5e1 !important;
+  font-weight: 500 !important;
+}
+
+/* Improve paragraph text readability */
+.dark p {
+  color: #cbd5e1 !important;
+  line-height: 1.6;
+}
+
+/* Better contrast for labels */
+.dark label {
+  color: #cbd5e1 !important;
+  font-weight: 500 !important;
+}
+
+/* Improve button text visibility */
+.dark button {
+  font-weight: 500 !important;
+}
+
+/* Secondary buttons - better visibility */
+.dark button:not([class*="bg-[#123524]"]):not([class*="bg-emerald"]):not([class*="bg-green"]) {
+  color: #cbd5e1 !important;
+}
+
+/* Improve link visibility */
+.dark a:not([class*="bg-"]) {
+  color: #34d399 !important;
+  text-decoration: none;
+}
+
+.dark a:not([class*="bg-"]):hover {
+  color: #6ee7b7 !important;
+  text-decoration: underline;
+}
+
+/* Better visibility for disabled elements */
+.dark button:disabled,
+.dark input:disabled,
+.dark select:disabled,
+.dark textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Improve placeholder visibility */
+.dark ::placeholder {
+  color: #64748b !important;
+  opacity: 0.8;
+}
+
+/* Better focus states */
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+  outline: none;
+}
+
+/* Improve badge/tag visibility */
+.dark [class*="badge"],
+.dark [class*="tag"],
+.dark .badge,
+.dark .tag {
+  background-color: #334155 !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #475569 !important;
+}
+
+/* Improve alert/notification visibility */
+.dark [class*="alert"],
+.dark .alert {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+/* Success states - green accent */
+.dark [class*="success"] {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+  border-color: #10b981 !important;
+  color: #6ee7b7 !important;
+}
+
+/* Error states - red accent */
+.dark [class*="error"],
+.dark [class*="danger"] {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: #ef4444 !important;
+  color: #fca5a5 !important;
+}
+
+/* Warning states - yellow accent */
+.dark [class*="warning"] {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  border-color: #f59e0b !important;
+  color: #fcd34d !important;
+}
+
+/* Improve divider visibility */
+.dark hr,
+.dark [class*="divider"] {
+  border-color: #334155 !important;
+  opacity: 0.5;
+}
+
+/* Better scrollbar for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Improve code/pre visibility */
+.dark code,
+.dark pre {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Better visibility for selected text */
+.dark ::selection {
+  background-color: rgba(16, 185, 129, 0.3);
+  color: #f1f5f9;
+}
+
+/* Improve modal/dialog visibility */
+.dark [class*="modal"],
+.dark [class*="dialog"],
+.dark .modal,
+.dark .dialog {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Improve dropdown visibility */
+.dark [class*="dropdown"],
+.dark [class*="menu"],
+.dark .dropdown,
+.dark .menu {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Better visibility for list items */
+.dark li {
+  color: #cbd5e1 !important;
+}
+
+/* Improve stat/metric visibility */
+.dark [class*="stat"],
+.dark [class*="metric"],
+.dark .stat,
+.dark .metric {
+  color: #f1f5f9 !important;
+  font-weight: 600 !important;
+}
+
+/* Better visibility for small text */
+.dark small,
+.dark [class*="text-xs"],
+.dark [class*="text-sm"] {
+  color: #94a3b8 !important;
+}
+
+/* Improve checkbox and radio visibility */
+.dark input[type="checkbox"],
+.dark input[type="radio"] {
+  border-color: #475569 !important;
+  background-color: #334155 !important;
+}
+
+.dark input[type="checkbox"]:checked,
+.dark input[type="radio"]:checked {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+/* Better visibility for progress bars */
+.dark [class*="progress"],
+.dark .progress {
+  background-color: #334155 !important;
+}
+
+.dark [class*="progress-bar"],
+.dark .progress-bar {
+  background-color: #10b981 !important;
+}
+
+/* Improve skeleton loader visibility */
+.dark [class*="skeleton"],
+.dark .skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* Fix main content area white background */
+.dark main,
+.dark [class*="main"],
+.dark .main-content,
+.dark [role="main"] {
+  background-color: #0f172a !important;
+}
+
+/* Fix any remaining bright backgrounds */
+.dark [class*="bg-slate-50"],
+.dark [class*="bg-slate-100"] {
+  background-color: #1e293b !important;
+}
+
+/* Ensure page containers use dark background */
+.dark .page,
+.dark .page-container,
+.dark .container {
+  background-color: transparent !important;
+}
+
+/* Fix specific dashboard/impact page backgrounds */
+.dark [class*="dashboard"],
+.dark [class*="impact"] {
+  background-color: transparent !important;
+}
+
+/* Fix bright white/gray buttons in dark mode */
+.dark button[class*="bg-gray-100"],
+.dark button[class*="bg-gray-50"],
+.dark button[class*="bg-white"] {
+  background-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark button[class*="bg-gray-100"]:hover,
+.dark button[class*="bg-gray-50"]:hover,
+.dark button[class*="bg-white"]:hover {
+  background-color: #475569 !important;
+}
+
+/* Fix any inline style white backgrounds */
+.dark [style*="background-color: rgb(243, 244, 246)"],
+.dark [style*="background-color: rgb(249, 250, 251)"],
+.dark [style*="background-color: rgb(255, 255, 255)"] {
+  background-color: #334155 !important;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
 
-const logoSrc = "/ChatGPT_Image_Dec_14__2025__09_56_58_AM-removebg-preview.png";
+const logoSrc = "/waste-truck.png";
 
 export default function OtpPage() {
   const navigate = useNavigate();
@@ -20,18 +20,37 @@ export default function OtpPage() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const code = otp.join("");
     if (code.length !== 4) {
       setErrorMsg("✗ Please enter full OTP");
       return;
     }
-    if (code === "1234") {
-      setSuccessMsg("✓ OTP Verified Successfully");
-      setTimeout(() => navigate("/resetpassword"), 800);
-    } else {
-      setErrorMsg("✗ Invalid OTP");
+
+    try {
+      const email = localStorage.getItem("resetEmail");
+      if (!email) {
+        setErrorMsg("✗ Session expired. Please try again.");
+        return;
+      }
+
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: code })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSuccessMsg("✓ OTP Verified Successfully");
+        localStorage.setItem("resetOtp", code);
+        setTimeout(() => navigate("/resetpassword"), 800);
+      } else {
+        setErrorMsg(`✗ ${data.message || "Invalid OTP"}`);
+      }
+    } catch (err) {
+      setErrorMsg("✗ Verification failed. Try again.");
     }
   };
 
@@ -72,7 +91,14 @@ export default function OtpPage() {
           });
 
           const el = document.getElementById('googleSignInOtp');
-          if (el) window.google.accounts.id.renderButton(el, { theme: 'outline', size: 'large' });
+          if (el) {
+            el.innerHTML = "";
+            window.google.accounts.id.renderButton(el, {
+              theme: "filled_white",
+              size: "large",
+              shape: "pill"
+            });
+          }
         } catch (e) { console.error('GSI init error', e); }
       }
     };
@@ -98,7 +124,7 @@ export default function OtpPage() {
           <div className="left-section">
             <div className="brand-header">
               <img src={logoSrc} className="brand-icon" />
-              <h1 className="brand-name">WasteWise</h1>
+              <h1 className="brand-name">WasteZero</h1>
             </div>
             <h2 className="headline">OTP Verification</h2>
             <p className="subtext">
@@ -151,7 +177,7 @@ export default function OtpPage() {
           </div>
         </div>
       </div>
-      <div className="footer-bar">COPYRIGHT 2024 WASTEWISE.COM ALL RIGHTS RESERVED</div>
+      <div className="footer-bar">COPYRIGHT 2026 WASTEZERO.IN ALL RIGHTS RESERVED</div>
     </div>
   );
 }

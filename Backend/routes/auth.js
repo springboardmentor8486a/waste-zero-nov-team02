@@ -1,11 +1,15 @@
 const express = require('express');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
+const VolunteerProfile = require('../models/VolunteerProfile');
+const NgoProfile = require('../models/NgoProfile');
 const OTP = require('../models/OTP');
+const Notification = require('../models/Notification');
 const generateToken = require('../utils/generateToken');
 const generateOTP = require('../utils/generateOTP');
 const sendOTP = require('../utils/sendOTP');
 const protect = require('../middleware/auth');
+const AdminLog = require('../models/AdminLog');
 
 const router = express.Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -13,9 +17,10 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // REGISTER
 router.post('/register', async (req, res) => {
   try {
-    const { email, username, password, confirmPassword, role } = req.body;
 
-    if (!email || !username || !password || !confirmPassword || !role) {
+    const { email, username, password, confirmPassword } = req.body;
+
+    if (!email || !username || !password || !confirmPassword) {
       return res.status(400).json({ success: false, message: 'Please fill in all fields' });
     }
 
@@ -29,11 +34,65 @@ router.post('/register', async (req, res) => {
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
+      // Check if user is blocked
+      if (existingUser.isBlocked && existingUser.email === email) {
+        return res.status(403).json({
+          success: false,
+          message: `Your email has been blocked. Reason: ${existingUser.blockedReason || 'No reason provided'}. Please contact support for assistance.`
+        });
+      }
       const message = existingUser.email === email ? 'Email already exists' : 'Username already exists';
       return res.status(400).json({ success: false, message });
     }
 
-    const user = await User.create({ email, username, password, role });
+    // Derive role from email domain: any domain containing 'gmail' -> volunteer, others -> ngo
+    const domain = String(email).split('@')[1] || '';
+    const derivedRole = /gmail/i.test(domain) ? 'volunteer' : 'ngo';
+
+    // Server-side validation: if client provided a `role`, ensure it matches derived role.
+    // This prevents clients from overriding role to gain elevated access during registration.
+    if (req.body.role && String(req.body.role) !== String(derivedRole)) {
+      return res.status(400).json({ success: false, message: `Role mismatch: detected '${derivedRole}' from email domain; cannot override to '${req.body.role}'.` });
+    }
+
+    const user = await User.create({ email, username, password, role: derivedRole, fullName: username });
+
+    // Auto-create profile based on role
+    if (derivedRole === 'volunteer') {
+      await VolunteerProfile.create({
+        user: user._id,
+        displayName: username,
+        avatar: 'no-photo.jpg'
+      });
+    } else if (derivedRole === 'ngo') {
+      await NgoProfile.create({
+        user: user._id,
+        organizationName: username,
+        logo: 'no-photo.jpg'
+      });
+    }
+
+    // Notify all admins about new registration
+    const admins = await User.find({ role: 'admin' });
+    if (admins.length > 0) {
+      const notifications = admins.map(admin => ({
+        recipient: admin._id,
+        sender: user._id,
+        type: 'new_registration',
+        message: `New ${derivedRole} registered: ${username}`,
+        isRead: false
+      }));
+      await Notification.insertMany(notifications);
+    }
+
+    // Create Admin Log for registration
+    await AdminLog.create({
+      action: 'USER_REGISTERED',
+      performedBy: user._id,
+      targetUser: user._id,
+      details: `New user registration via Email: ${username} (${derivedRole})`
+    });
+
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -73,30 +132,54 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    if (user.isGoogleUser) {
-      return res.status(401).json({ success: false, message: 'Please login with Google' });
+    // Check if user is blocked
+    if (user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        message: `Your account has been blocked. Reason: ${user.blockedReason || 'No reason provided'}. Please contact support for assistance.`
+      });
     }
+
+    // ALLOW Google users to login with password if they have reset it/set one.
+    // We only rely on password comparison below.
+    // if (user.isGoogleUser) { ... } -> REMOVED strict check
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
+    // Update last login timestamp and login count
+    user.lastLogin = new Date();
+    user.loginCount = (user.loginCount || 0) + 1;
+    await user.save();
+
     const token = generateToken(user._id);
+
+    let userData = {
+      id: user._id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      fullName: user.fullName,
+      location: user.location,
+      skills: user.skills
+    };
+
+    // Fetch Profile Details
+    if (user.role === 'ngo') {
+      const ngoProfile = await NgoProfile.findOne({ user: user._id });
+      userData.ngoDetails = ngoProfile;
+    } else if (user.role === 'volunteer') {
+      const volProfile = await VolunteerProfile.findOne({ user: user._id });
+      userData.volunteerDetails = volProfile;
+    }
 
     res.json({
       success: true,
       message: 'Login successful',
       token,
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        fullName: user.fullName,
-        location: user.location,
-        skills: user.skills
-      }
+      user: userData
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -121,6 +204,7 @@ router.post('/google', async (req, res) => {
     const email = payload?.email;
     const name = payload?.name;
     const googleId = payload?.sub;
+    const googleProfilePic = payload?.picture;
 
     if (!email || !googleId) {
       return res.status(400).json({ success: false, message: 'Invalid Google token payload' });
@@ -129,26 +213,99 @@ router.post('/google', async (req, res) => {
     let user = await User.findOne({ $or: [{ email }, { googleId }] });
 
     if (user) {
-      if (!user.googleId) {
-        user.googleId = googleId;
-        user.isGoogleUser = true;
-        user.isEmailVerified = true;
-        await user.save();
+      // Check if user is blocked
+      if (user.isBlocked) {
+        return res.status(403).json({
+          success: false,
+          message: `Your account has been blocked. Reason: ${user.blockedReason || 'No reason provided'}. Please contact support for assistance.`
+        });
       }
 
+      // Update Google profile info even for existing users
+      user.googleId = googleId;
+      user.googleProfilePic = googleProfilePic;
+      user.isGoogleUser = true;
+      user.isEmailVerified = true;
+      user.lastLogin = new Date(); // Update last login
+      user.loginCount = (user.loginCount || 0) + 1; // Increment login count
+      await user.save();
+
       const token = generateToken(user._id);
-      return res.json({ success: true, message: 'Login successful', token, user });
+
+      // Fetch Profile Details
+      let userData = user.toObject();
+      if (user.role === 'ngo') {
+        const ngoProfile = await NgoProfile.findOne({ user: user._id });
+        userData.ngoDetails = ngoProfile;
+      } else if (user.role === 'volunteer') {
+        const volProfile = await VolunteerProfile.findOne({ user: user._id });
+        userData.volunteerDetails = volProfile;
+      }
+
+      return res.json({ success: true, message: 'Login successful', token, user: userData });
+    }
+
+    // Before creating new user, check if there's a blocked user with this email
+    const blockedUser = await User.findOne({ email, isBlocked: true });
+    if (blockedUser) {
+      return res.status(403).json({
+        success: false,
+        message: `Your email has been blocked. Reason: ${blockedUser.blockedReason || 'No reason provided'}. Please contact support for assistance.`
+      });
     }
 
     const username = email.split('@')[0] + Math.floor(Math.random() * 1000);
+    // Derive role from email domain for Google signups as well
+    const domain = String(email).split('@')[1] || '';
+    const derivedRole = /gmail/i.test(domain) ? 'volunteer' : 'ngo';
+
     user = await User.create({
       email,
       username,
       googleId,
+      googleProfilePic,
       isGoogleUser: true,
       isEmailVerified: true,
-      fullName: name,
-      role: 'volunteer'
+      fullName: name || username,
+      role: derivedRole,
+      lastLogin: new Date(), // Set initial last login for new users
+      loginCount: 1 // First login
+    });
+
+    // Auto-create profile based on role
+    if (derivedRole === 'volunteer') {
+      await VolunteerProfile.create({
+        user: user._id,
+        displayName: name || username,
+        avatar: googleProfilePic || 'no-photo.jpg'
+      });
+    } else if (derivedRole === 'ngo') {
+      await NgoProfile.create({
+        user: user._id,
+        organizationName: name || username,
+        logo: googleProfilePic || 'no-photo.jpg'
+      });
+    }
+
+    // Notify all admins about new registration
+    const admins = await User.find({ role: 'admin' });
+    if (admins.length > 0) {
+      const notificationsArr = admins.map(admin => ({
+        recipient: admin._id,
+        sender: user._id,
+        type: 'new_registration',
+        message: `New Google ${derivedRole} registered: ${user.username}`,
+        isRead: false
+      }));
+      await Notification.insertMany(notificationsArr);
+    }
+
+    // Create Admin Log for Google registration
+    await AdminLog.create({
+      action: 'GOOGLE_REGISTERED',
+      performedBy: user._id,
+      targetUser: user._id,
+      details: `New user registration via Google: ${user.username} (${derivedRole})`
     });
 
     const token = generateToken(user._id);
@@ -180,6 +337,7 @@ router.post('/forgot-password', async (req, res) => {
     await OTP.create({ email, otp, expiresAt });
 
     const sent = await sendOTP(email, otp);
+    console.log(`[AUTH] Forgot Password: OTP generated for ${email}: ${otp}. Sent: ${sent}`);
     if (!sent) {
       return res.status(500).json({ success: false, message: 'Failed to send OTP' });
     }
@@ -199,19 +357,27 @@ router.post('/verify-otp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email and OTP are required' });
     }
 
-    const otpRecord = await OTP.findOne({
-      email,
-      otp,
+    const query = {
+      email: email.trim().toLowerCase(),
+      otp: otp.trim(),
       used: false,
       expiresAt: { $gt: new Date() }
-    });
+    };
+
+    console.log(`[AUTH] Verifying OTP with query:`, JSON.stringify(query));
+
+    const otpRecord = await OTP.findOne(query);
 
     if (!otpRecord) {
+      const lastRec = await OTP.findOne({ email: query.email }).sort({ createdAt: -1 });
+      console.log(`[AUTH] OTP Not Found. Last record for ${query.email}:`, lastRec ? `OTP:${lastRec.otp}, Used:${lastRec.used}, Expired:${lastRec.expiresAt < new Date()}` : 'None');
       return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
     }
 
-    otpRecord.used = true;
-    await otpRecord.save();
+    console.log(`[AUTH] OTP Verified successfully for ${email}`);
+
+    // otpRecord.used = true; // Don't consume yet, wait for password reset
+    // await otpRecord.save();
 
     res.json({ success: true, message: 'OTP verified successfully' });
   } catch (error) {
